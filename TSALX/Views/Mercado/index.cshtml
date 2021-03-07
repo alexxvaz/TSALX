@@ -1,0 +1,54 @@
+﻿@model IEnumerable<TSALX.Models.Mercado>
+@{
+    ViewBag.Title = "Mercado";
+}
+
+<h1>Mercado</h1>
+
+@if( ViewBag.ErroMensagem != null )
+{
+    <div class="row mt-3">
+        <div class="col-lg-12">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                @ViewBag.ErroMensagem
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row mt-4">
+    <div class="col-lg-12 text-right">
+        <a href="@Url.Action("novo", "Mercado")" class="btn btn-warning"><i class="fa fa-plus" aria-hidden="true"></i> Novo item</a>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-lg-12">
+        <table class="table bg-white" id="MercadoTabela">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th class="w-75">Nome</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach( var item in Model )
+                {
+
+                    <tr>
+                        <td class="w-75">@item.Nome</td>
+                        <td class="text-center"><a href="@Url.Action( "editar", "Mercado", new { id = item.IDMercado } )" class="text-secondary"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
+                        <td class="text-center"><a href="@Url.Action( "excluir", "Mercado", new { id = item.IDMercado } )" onclick="return confirm('Deseja excluir o item @item.Nome?');" class="text-danger"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a></td>
+                    </tr>
+
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Play:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kreon:wght@600&display=swap');
+
+.saldo{
+    color: white;
+    font-size: 1.6rem;
+    font-family: 'Kreon', serif;
+    font-weight: 600;
+}
+
+.valor{
+    font-family: 'Kreon', serif;
+    font-weight: bold;
+  
+}
+.numero{
+    font-family: 'Courier New', Courier, monospace;
+    text-align: right; 
+}
+a.text-light:hover{ 
+    color: #ff6600 !important;
+}
+
+body{
+    background-color: #f5f5f5;
+    padding-top: 85px;
+}
+
+.rodape{
+
+    background-color: #000133;
+    color: whitesmoke;
+    font-size: .8rem;
+    height: 40px;
+
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 1.5em;
+}
+
+.encerrou{
+    color: #6D6968;
+}
+
+.tabela-cabecalho-mercado{
+    background-color: #ffdb99;
+}
+.tabela-rodape-mercado
+{
+    background-color: #f0eda4;
+}
+.titulo{
+
+    font-family: 'Play', sans-serif; 
+    font-size: 1.6em;
+    margin-right: 25px;
+    margin-left: 10px;
+}
+.aposta-titulo-campeonato
+{
+    font-size: 1.5em;
+    font-weight: 800;
+    color: white;
+    
+}
+.aposta-titulo{
+    color: white;
+    font-size: 1.2em;
+    font-weight: 800;
+}
+.field-validation-error {
+    color: #e50000;
+    font-size: 0.9rem;
+}
+.input-validation-error {
+    border: solid 1px #e50000;
+}
+.input-validation-error:focus {
+    border: solid 1px #e50000;
+}
+
+.partida-cabecalho-fonte{
+    font-size: 0.9em;
+}
+
+.credito {
+    color: #0041C2;
+}

@@ -1,0 +1,190 @@
+﻿@model TSALX.Models.Partida
+
+@{
+    ViewBag.Title = "Partida";
+    string ClassInativa = string.Empty;
+}
+
+<h1>Partida</h1>
+
+<!-- Mensagens -->
+@if( ViewBag.ErroMensagem != null )
+{
+    <div class="row mt-3">
+        <div class="col-lg-12">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                @ViewBag.ErroMensagem
+            </div>
+        </div>
+    </div>
+}
+
+@if( ViewBag.Mensagem != null )
+{
+    <div class="row mt-3">
+        <div class="col-lg-12">
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                @ViewBag.Mensagem
+            </div>
+        </div>
+    </div>
+}
+<!-- Listar partidas (voltar) -->
+<div class="row mb-2">
+    <div class="col-lg-12 text-right">
+        <a href="@Url.Action( "Index", "Home" )" class="text-secondary">
+            <i class="fa fa-table" aria-hidden="true"></i> Listar Partidas
+        </a>
+    </div>
+</div>
+
+<!-- Excluir -->
+<div class="row">
+    <div class="col-lg-12 text-right">
+
+        @if( !Model.FoiLancado )
+        {
+            <a href="@Url.Action( "excluir", "Partida", new { id = Model.IDPartida } )" onclick="return confirm('Deseja excluir a partida?');" class="btn btn-outline-danger"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i> Excluir Partida</a>
+        }
+    </div>
+</div>
+
+<!-- Formulário -->
+@using( Html.BeginForm() )
+{
+
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor( m => m.IDPartida )
+
+    <div class="form-group">
+
+        <div class="row mt-4">
+            <div class="col-lg-12">
+                @Html.LabelFor( m => m.IDCampeonato )
+                @Html.DropDownList( "IDCampeonato", new SelectList( Model.ListaCampeonato, "IDCampeonato", "Nome" ), new { @class = "form-control", disabled = "disabled" } )
+                @Html.HiddenFor( m => m.IDCampeonato )
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <div class="row mt-4">
+
+            <!-- data -->
+            <div class="col-lg-3">
+                @Html.LabelFor( m => m.DataPartida )
+                @Html.TextBoxFor( m => m.DataPartida, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" } )
+                @Html.ValidationMessageFor( m => m.DataPartida )
+            </div>
+
+            <!-- Time 1 -->
+            <div class="col-lg-4">
+                @Html.LabelFor( m => m.IDEquipe1 )
+                @Html.DropDownList( "IDEquipe1", new SelectList( Model.ListaEquipe, "IDEquipe", "Nome" ), "(selecione uma equipe)", new { @class = "form-control" } )
+                @Html.ValidationMessageFor( m => m.IDEquipe1 )
+            </div>
+
+            <div class="col-lg-1 text-center" style="margin-top: 2.4rem !important;">vs</div>
+
+            <!-- Time 2 -->
+            <div class="col-lg-4">
+                @Html.LabelFor( m => m.IDEquipe2 )
+                @Html.DropDownList( "IDEquipe2", new SelectList( Model.ListaEquipe, "IDEquipe", "Nome" ), "(selecione uma equipe)", new { @class = "form-control" } )
+                @Html.ValidationMessageFor( m => m.IDEquipe2 )
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 text-right">
+            <button type="submit" class="btn btn-warning">Salvar</button>
+        </div>
+    </div>
+
+}
+
+<h2>Entradas</h2>
+<table class="table bg-white">
+    <thead class="tabela-cabecalho-mercado">
+        <tr>
+            <th>Mercado</th>
+            <th>Tipo de Aposta</th>
+            <th class="text-right">ODD</th>
+            <th class="text-right">Valor</th>
+            <th class="text-center">Situação</th>
+            <th class="text-right">Valor Encerrado</th>
+            <th class="text-right">Valor Retorno</th>
+            <th class="text-center">&nbsp;</th>
+            <th class="text-center">&nbsp;</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if( Model.ListaEntradas.Count > 0 )
+        {
+            foreach( var item in Model.ListaEntradas )
+            {
+        <tr>
+            <td>@item.NomeMercado</td>
+            <td>@item.TipoAposta</td>
+            <td class="text-right">@item.ODD</td>
+            <td class="text-right">@string.Format( System.Globalization.CultureInfo.CreateSpecificCulture( "pt-BR" ), "{0:c2}", item.ValorEntrada )</td>
+            <td class="text-center @(item.CodSitucao == 'G' ? "text-success" : ( item.CodSitucao == 'P' ? "text-danger" : "encerrou" ))"><i class="@item.Icone" aria-hidden="true"></i> @item.NomeSituacao </td>
+            @if( item.ValorEncerrado > 0 )
+            {
+                <td class="text-right valor @(item.CodSitucao == 'G' ? "text-success" : ( item.CodSitucao == 'P' ? "text-danger" : "encerrou" ))">@string.Format( System.Globalization.CultureInfo.CreateSpecificCulture( "pt-BR" ), "{0:c2}", item.ValorEncerrado )</td>
+            }
+            else
+            {
+                <td>&nbsp;</td>
+            }
+
+            <td class="text-right valor @(item.CodSitucao == 'G' ? "text-success" : ( item.CodSitucao == 'P' ? "text-danger" : "encerrou" ))">@string.Format( System.Globalization.CultureInfo.CreateSpecificCulture( "pt-BR" ), "{0:c2}", item.ValorRetorno )</td>
+            @if( item.IDLancamento == 0 )
+            {
+                <td class="text-center"><a href="@Url.Action( "Index", "Entrada", new { ID = Model.IDPartida, IDEntrada = item.IDEntrada } )" class="text-secondary"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
+                <td class="text-center"><a href="@Url.Action( "ExcluirEntrada", "Partida", new { ID = Model.IDPartida, IDEntrada = item.IDEntrada } )" onclick="return confirm('Deseja excluir a entrada @item.NomeMercado [@item.TipoAposta]?');" class="text-danger"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a></td>
+            }
+            else
+            {
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            }
+
+        </tr>
+            }
+
+            ClassInativa = Model.FoiLancado ? "disabled" : string.Empty;
+
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="text-center" style="font-size: large;color:black;">Não há entradas para esta partida</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot class="tabela-rodape-mercado">
+        <tr>
+            <td colspan="6">&nbsp;</td>
+            <td class="text-xl-right font-weight-bold">Saldo:&nbsp;<span class="valor @( Model.Saldo > 0 ? "text-success" : ( Model.Saldo < 0 ? "text-danger" : "encerrou" ) ) ">@String.Format( System.Globalization.CultureInfo.CreateSpecificCulture( "pt-BR" ), "{0:c2}", Model.Saldo )</span></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="row mt-3">
+    <div class="col-lg-12 text-right">
+        <a href="@Url.Action( "Index", "Entrada", new { ID = Model.IDPartida, IDEntrada = 0 } )" class="btn btn-warning @ClassInativa" }><i class="fa fa-sticky-note-o fa-lg" aria-hidden="true"></i> Entrada</a>
+        <a href="@Url.Action( "Finalizar", "Partida", new { id = Model.IDPartida } )" onclick="return confirm('Deseja finalizar a partida?');" class="btn btn-outline-info @ClassInativa"><i class="fa fa-check-square-o fa-lg" aria-hidden="true"></i> Finalizar</a>
+    </div>
+</div>

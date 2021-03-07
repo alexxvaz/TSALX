@@ -1,0 +1,116 @@
+﻿@model TSALX.Models.Entrada
+@{
+    ViewBag.Title = "Entrada";
+}
+
+<h1>Entrada</h1>
+
+<div class="row mt-4">
+
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header bg-info text-center">
+                <img src="@Model.Partida.BanCamp" alt="tsalx - entrada" />
+                <span class="aposta-titulo-campeonato">
+                    @Model.Partida.Campeonato
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-12 text-dark">Data da Partida</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 text-center font-weight-bold text-primary">
+                        @{
+                            IFormatProvider cultBrasil = new System.Globalization.CultureInfo( "pt-BR" );
+                            @Model.Partida.DataPartida.GetDateTimeFormats( cultBrasil )[ 14 ];
+                        }
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-lg-12 text-dark">Jogo</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5 text-right font-weight-bold text-primary">
+                        <img src="@Model.Partida.BanEquipe1" alt="tsalx - equipe1" />
+                        @Model.Partida.Equipe1
+                    </div>
+                    <div class="col-lg-2 text-center text-primary">vs</div>
+                    <div class="col-lg-5 text-left font-weight-bold text-primary">
+                        @Model.Partida.Equipe2
+                        <img src="@Model.Partida.BanEquipe2" alt="tsalx - equipe2" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-lg-12 text-right">
+                <a href="@Url.Action( "editar", "Partida", new { ID = Model.Partida.IDPartida } )" class="btn btn-outline-secondary btn-block">voltar a partida</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        @using( Html.BeginForm() )
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor( m => m.IDEntrada )
+
+            <div class="card">
+                <div class="card-header bg-warning aposta-titulo">Entrada</div>
+
+                <div class="card-body">
+
+                    <div class="form-group">
+                        @Html.LabelFor( m => m.IDMercado )
+                        @Html.DropDownListFor( m => m.IDMercado, new SelectList( Model.ListaMercado, "IDMercado", "Nome" ), "(selecione)", new { @class = "form-control" } )
+                        @Html.ValidationMessageFor( m => m.IDMercado )
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor( m => m.TipoAposta )
+                        @Html.TextBoxFor( m => m.TipoAposta, new { @class = "form-control" } )
+                        @Html.ValidationMessageFor( m => m.TipoAposta )
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-lg-6">
+                            @Html.LabelFor( m => m.ODD )
+                            @Html.TextBoxFor( m => m.ODD, new { @class = "form-control numero", @autocomplete = "off" } )
+                            @Html.ValidationMessageFor( m => m.ODD )
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.LabelFor( m => m.ValorEntrada )
+                            @Html.TextBoxFor( m => m.ValorEntrada, new { @class = "form-control numero", @autocomplete = "off" } )
+                            @Html.ValidationMessageFor( m => m.ValorEntrada )
+                        </div>
+                    </div>
+
+                    <div class="form-row mt-3">
+                        <div class="col-lg-6">
+                            @Html.LabelFor( m => m.CodSituacao )
+                            @Html.DropDownListFor( m => m.CodSituacao, new SelectList( Model.ListaEntrada, "Codigo", "Nome" ), "(selecione)", new { @class = "form-control" } )
+                            @Html.ValidationMessageFor( m => m.CodSituacao )
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.LabelFor( m => m.ValorEncerrado )
+                            @Html.TextBoxFor( m => m.ValorEncerrado, new { @class = "form-control numero", @autocomplete = "off" } )
+                            @Html.ValidationMessageFor( m => m.ValorEncerrado )
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-lg-12 text-right">
+                    <button type="submit" class="btn btn-warning">Salvar</button>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>

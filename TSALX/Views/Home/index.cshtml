@@ -1,0 +1,128 @@
+﻿@model TSALX.Models.Inicio
+
+@{
+    ViewBag.Title = "Trader Sport ALX";
+}
+
+@if( ViewBag.ErroMensagem != null )
+{
+    <div class="row mt-3">
+        <div class="col-lg-12">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                @ViewBag.ErroMensagem
+            </div>
+        </div>
+    </div>
+}
+
+<!-- botão mais partida -->
+<div class="row mt-5 mb-3">
+    <div class="col-lg-12 text-right">
+        <a href="@Url.Action( "Criar", "Partida")" class="btn btn-warning btn-lg"><i class="fa fa-plus" aria-hidden="true"></i> Paritdas</a>
+    </div>
+</div>
+
+<!-- filtro de datas -->
+@using( Html.BeginForm( "Index", "Home", FormMethod.Post, new { @class = "form-inline mb-1" } ) )
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group mr-2">
+        @Html.LabelFor( m => m.DtInicial )&nbsp;&nbsp;
+        @Html.TextBoxFor( m => m.DtInicial, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" } )
+
+    </div>
+    <div class="form-group mr-2">
+        @Html.LabelFor( m => m.DtFinal )&nbsp;&nbsp;
+        @Html.TextBoxFor( m => m.DtFinal, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" } )
+    </div>
+
+    <button type="submit" class="btn btn-warning">Pesquisar</button>
+    <span>&nbsp;&nbsp;@Html.ValidationMessage( "DataInicialMaior" )</span>
+    <span>&nbsp;&nbsp;@Html.ValidationMessage( "Periodo30dias" )</span>
+    <span>&nbsp;&nbsp;@Html.ValidationMessageFor( m => m.DtInicial )</span>
+    <span>&nbsp;&nbsp;@Html.ValidationMessageFor( m => m.DtFinal )</span>
+
+}
+
+@foreach( var item in Model.ListaPartidas )
+{
+    <div class="row mb-1">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header bg-primary text-light">
+                    <div class="row">
+                        <div class="col-lg-1 font-weight-bold text-left my-auto"><a href="@Url.Action( "editar", "Partida", new { ID = item.IDPartida } )" class="text-warning"><i class="fa fa-futbol-o" aria-hidden="true"></i></a></div>
+                        <div class="col-lg-4 font-weight-bold my-auto text-center partida-cabecalho-fonte">
+                            <img src="@item.BanEquipe1" alt="tsalx - Bandeira" /> @item.Equipe1
+                            vs
+                            @item.Equipe2 <img src="@item.BanEquipe2" alt="tsalx - Bandeira" />
+                        </div>
+                        <div class="col-lg-2 font-weight-bold my-auto text-center partida-cabecalho-fonte">@string.Format( "{0:dd/MMM/yyyy}", item.DataPartida )</div>
+                        <div class="col-lg-4 font-weight-bold my-auto partida-cabecalho-fonte"><img src="@item.BanCamp" alt="tsalx - Bandeira" /> @item.Campeonato</div>
+                        <div class="col-lg-1 text-right my-auto">
+                            <a href="@Url.Content( "#partida" + item.IDPartida)" class="text-warning" data-toggle="collapse" aria-expanded="false" aria-controls="partida1">
+                                <i class="fa fa-chevron-up" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body bg-light collapse" id=@string.Format( "partida{0}", item.IDPartida )>
+                    <table class="table">
+                        <thead class="tabela-cabecalho-mercado">
+                            <tr>
+                                <th>Mercado</th>
+                                <th>Tipo de Aposta</th>
+                                <th class="text-right">ODD</th>
+                                <th class="text-right">Valor</th>
+                                <th class="text-center">Situação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if( item.ListaEntradas.Count > 0 )
+                            {
+                                foreach( var itmEntrada in item.ListaEntradas )
+                                {
+                                    <tr>
+                                        <td>@itmEntrada.NomeMercado</td>
+                                        <td>@itmEntrada.TipoAposta</td>
+                                        <td class="text-right">@itmEntrada.ODD</td>
+                                        <td class="text-right valor @(itmEntrada.CodSitucao == 'G' ? "text-success" : ( itmEntrada.CodSitucao == 'P' ? "text-danger" : "encerrou" ))">@string.Format( System.Globalization.CultureInfo.CreateSpecificCulture( "pt-BR" ), "{0:c2}", itmEntrada.ValorRetorno )</td>
+                                        <td class="text-center @(itmEntrada.CodSitucao == 'G' ? "text-success" : ( itmEntrada.CodSitucao == 'P' ? "text-danger" : "encerrou" ))"><i class="@itmEntrada.Icone" aria-hidden="true"></i> @itmEntrada.NomeSituacao</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center" style="font-size: large;color:black;">Não há entradas para esta partida</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+@section Inicio
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.collapse').on('hide.bs.collapse', function () {
+                $(this).prev('.card-header').find('.fa').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+            });
+
+            $('.collapse').on('show.bs.collapse', function () {
+                $(this).prev('.card-header').find('.fa').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+            });
+
+        });
+    </script>
+}
