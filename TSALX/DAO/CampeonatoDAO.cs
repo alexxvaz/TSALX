@@ -56,13 +56,20 @@ namespace TSALX.DAO
             return lstRet;
         }
 
-        public List<Models.CampeonatoLista> listar()
+        private List<Models.CampeonatoLista> listar( bool pblnAtivo )
         {
             List<Models.CampeonatoLista> lst = new List<Models.CampeonatoLista>();
 
             try
             {
-                DataTableReader rd = _oBD.executarQuery( "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato FROM Regiao r INNER JOIN Campeonato c ON R.IDRegiao = C.IDRegiao order by NomeRegiao, NomeCampeonato " );
+                string strQuery = string.Empty;
+
+                if (!pblnAtivo)
+                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato FROM Regiao r INNER JOIN Campeonato c ON R.IDRegiao = C.IDRegiao order by NomeCampeonato ";
+                else
+                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao FROM Regiao r INNER JOIN Campeonato c ON R.IDRegiao = C.IDRegiao WHERE AtivoCampeonato = 1 ORDER BY NomeCampeonato ";
+
+                DataTableReader rd = _oBD.executarQuery( strQuery );
 
                 while( rd.Read() )
                 {
@@ -86,34 +93,15 @@ namespace TSALX.DAO
 
             return lst;
         }
+        public List<Models.CampeonatoLista> listar()
+        {
+            return this.listar(false);
+        }
         public List<Models.CampeonatoLista> listarAtivos()
         {
-            List<Models.CampeonatoLista> lst = new List<Models.CampeonatoLista>();
-
-            try
-            {
-                DataTableReader rd = _oBD.executarQuery( "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao FROM Regiao r INNER JOIN Campeonato c ON R.IDRegiao = C.IDRegiao WHERE AtivoCampeonato = 1 ORDER BY NomeCampeonato " );
-
-                while( rd.Read() )
-                {
-                    lst.Add( new Models.CampeonatoLista()
-                    {
-                        IDCampeonato = Convert.ToInt32( rd[ "IDCampeonato" ] ),
-                        Nome = rd[ "NomeCampeonato" ].ToString(),
-                        NomeRegiao = rd[ "NomeRegiao" ].ToString(),
-                        Bandeira = Util.informarBandeira( rd[ "SiglaRegiao" ].ToString() )
-                    } );
-                }
-
-            }
-            catch( alxExcecao ex )
-            {
-                new TratamentoErro( ex ).tratarErro();
-                lst = null;
-            }
-
-            return lst;
+            return this.listar(true);
         }
+        
         public void salvar( Models.Campeonato pobjCampeonato )
         {
             try

@@ -54,7 +54,7 @@
 
     <div class="row mt-4">
         <div class="col-lg-4">
-            <input type="text" class="form-control" placeholder="Filtro por Região" id="filtro_regiao" />
+            <input type="text" class="form-control" placeholder="Filtro por nome da equipe" id="filtro_equipe" />
         </div>
     </div>
 
@@ -163,7 +163,7 @@
 {
     <script>
         $(document).ready(function () {
-            $("#filtro_regiao").on("keyup", function () {
+            $("#filtro_equipe").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
                 $("#filtro_equipes div").filter(function () {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)

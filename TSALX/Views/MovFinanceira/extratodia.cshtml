@@ -1,0 +1,108 @@
+﻿@model TSALX.Models.Extrato
+
+@{
+    ViewBag.Title = "Extrato por dia";
+    decimal decTotal = Model.Registros.Sum( t => ( t.Natureza == 'D' ? t.Valor * -1: t.Valor ) );
+}
+
+<style>
+    #extrato tbody tr {
+        border-bottom: 1px #736F6E dashed;
+    }
+</style>
+
+<h1>Extrato por dia</h1>
+
+@if ( ViewBag.ErroMensagem != null )
+{
+    <div class="row mt-3">
+        <div class="col-lg-12">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                @ViewBag.ErroMensagem
+            </div>
+        </div>
+    </div>
+}
+
+<!-- filtro de datas -->
+@using ( Html.BeginForm( "ExtratoDia", "MovFinanceira", FormMethod.Post, new { @class = "form-inline mb-1 mt-5" } ) )
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group mr-2">
+        @Html.LabelFor( m => m.DtInicial )&nbsp;&nbsp;
+        @Html.TextBoxFor( m => m.DtInicial, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" } )
+
+    </div>
+
+    <button type="submit" class="btn btn-warning">Pesquisar</button>
+    <span>&nbsp;&nbsp;@Html.ValidationMessage( "DataInicialMaior" )</span>
+    <span>&nbsp;&nbsp;@Html.ValidationMessage( "Periodo30dias" )</span>
+    <span>&nbsp;&nbsp;@Html.ValidationMessageFor( m => m.DtInicial )</span>
+    <span>&nbsp;&nbsp;@Html.ValidationMessageFor( m => m.DtFinal )</span>
+
+}
+
+<!-- lista de lançamentos (extrato)-->
+@if ( Model.Registros.Count > 0 )
+{
+    <div class="row mt-3">
+        <div class="col-lg-12">
+            <table id="extrato" class="table table-borderless bg-light">
+                <thead class="table-dark">
+                    <tr>
+                        <td><strong>Data Lanc.</strong></td>
+                        <td class="w-75"><strong>Lançamento</strong></td>
+                        <td class="text-right"><strong>Valor</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach ( var itm in Model.Registros )
+                    {
+                        <tr>
+                            <td class="align-middle">@string.Format( "{0:dd/MM/yyyy}", itm.DataLanc )</td>
+                            <td>
+                                @if ( !string.IsNullOrEmpty( itm.NomeMercado.Trim() ) )
+                                {
+                                    <strong>@itm.NomeMercado [@itm.TipoAposta]</strong><br /> <span class="small">@itm.Equipe1 vs @itm.Equipe2 (@itm.Campeonato)</span>
+                                }
+                                else
+                                {
+                                    <strong>@(itm.Natureza == 'C' ? "Depósito" : "Saque")</strong>
+                                }
+
+                            </td>
+                            <td class="text-right align-middle valor @(itm.Natureza == 'C' ? "credito" : "text-danger")">@string.Format( System.Globalization.CultureInfo.CreateSpecificCulture( "pt-BR" ), "{0:c2}", itm.Valor )</td>
+                        </tr>
+                    }
+
+                </tbody>
+                <tfoot>
+                    <tr style="background-color: #d6d7d8;">
+                        <td colspan="3" class="text-right align-middle valor">@string.Format( System.Globalization.CultureInfo.CreateSpecificCulture( "pt-BR" ), "{0:c2}", decTotal )</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    if ( ViewBag.ErroMensagem == null )
+    {
+        <div class="row mt-3">
+            <div class="col-lg-12">
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    Não há lançamentos para o período informado
+                </div>
+            </div>
+        </div>
+    }
+}

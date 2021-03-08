@@ -188,6 +188,7 @@
     <Content Include="Views\MovFinanceira\Extrato.cshtml" />
     <Content Include="Views\Home\acesso.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <Content Include="Views\MovFinanceira\extratodia.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

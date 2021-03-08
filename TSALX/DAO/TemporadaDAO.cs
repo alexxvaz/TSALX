@@ -44,16 +44,29 @@ namespace TSALX.DAO
 
         public Dictionary<int, List<Models.TemporadaEquipe>> listar()
         {
-            
+
             Dictionary<int, List<Models.TemporadaEquipe>> dicRet = null;
 
             try
             {
                 StringBuilder oStrQuery = new StringBuilder();
+               
+                oStrQuery.Append( "SELECT r.IDRegiao " );
+                oStrQuery.Append( "  FROM Regiao r " );
+                oStrQuery.Append( " INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao " );
+                oStrQuery.Append( " WHERE ( SiglaRegiao IS NOT NULL OR siglaregiao NOT IN ('EU') ) " );
+                oStrQuery.AppendFormat(" AND IDCampeonato = {0} ", _intCampeonato );
 
-                oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, NomeRegiao " );
+                short shtRegiaoID = Convert.ToInt16( _oBD.executarScalar( oStrQuery.ToString() ) );
+
+                oStrQuery.Clear();
+                oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao " );
                 oStrQuery.Append( "  FROM Regiao r " );
                 oStrQuery.Append( " INNER JOIN Equipe e ON R.IDRegiao = E.IDRegiao " );
+
+                if ( shtRegiaoID > 0 )
+                    oStrQuery.AppendFormat( " WHERE r.IDRegiao = {0} ", shtRegiaoID );
+
                 oStrQuery.Append( " ORDER BY NomeEquipe " );
 
                 DataTableReader rd = _oBD.executarQuery( oStrQuery.ToString() );
@@ -69,8 +82,7 @@ namespace TSALX.DAO
                         IDEquipe = rd.GetInt32( 0 ), // IDEquipe
                         NomeEquipe = rd[ "NomeEquipe" ].ToString(),
                         Bandeira = Util.informarBandeira( rd[ "SiglaRegiao" ].ToString() ),
-                        Participa = lstTemporada.Contains( rd.GetInt32( 0 ) ),
-                        NomeRegiao = rd["NomeRegiao" ].ToString()
+                        Participa = lstTemporada.Contains( rd.GetInt32( 0 ) )
                     } );
                 }
 

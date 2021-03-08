@@ -103,5 +103,45 @@ namespace TSALX.Controllers
             return View( oExtrato );
 
         }
+    
+        public ActionResult ExtratoDia()
+        {
+            DateTime dtmExtrato = DateTime.Today.AddDays( -1 );
+
+            Models.Extrato oExtrato = new Models.Extrato() { DtInicial = dtmExtrato, DtFinal = dtmExtrato  };
+            
+            try
+            {
+                oExtrato.Registros = new LancamentoDAO().emitirExtrato( dtmExtrato, dtmExtrato );
+            }
+            catch ( alxExcecao ex )
+            {
+                ViewBag.ErroMensagem = ex.Mensagem;
+            }
+
+            return View( oExtrato );
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ExtratoDia( DateTime DtInicial )
+        {
+            DateTime dtmExtrato = DateTime.Today.AddDays( -1 );
+
+            Models.Extrato oExtrato = new Models.Extrato() { DtInicial = dtmExtrato, DtFinal = dtmExtrato };
+
+            try
+            {
+                oExtrato.DtInicial = DtInicial;
+                oExtrato.DtFinal = DtInicial;
+                oExtrato.Registros = new LancamentoDAO().emitirExtrato( DtInicial, DtInicial );
+            }
+            catch ( alxExcecao ex )
+            {
+                ViewBag.ErroMensagem = ex.Mensagem;
+            }
+
+            return View( oExtrato );
+        }
     }
 }
