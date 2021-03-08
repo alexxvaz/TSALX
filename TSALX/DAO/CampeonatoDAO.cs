@@ -67,7 +67,7 @@ namespace TSALX.DAO
                 if (!pblnAtivo)
                     strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato FROM Regiao r INNER JOIN Campeonato c ON R.IDRegiao = C.IDRegiao order by NomeCampeonato ";
                 else
-                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao FROM Regiao r INNER JOIN Campeonato c ON R.IDRegiao = C.IDRegiao WHERE AtivoCampeonato = 1 ORDER BY NomeCampeonato ";
+                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato FROM Regiao r INNER JOIN Campeonato c ON R.IDRegiao = C.IDRegiao WHERE AtivoCampeonato = 1 ORDER BY NomeCampeonato ";
 
                 DataTableReader rd = _oBD.executarQuery( strQuery );
 
