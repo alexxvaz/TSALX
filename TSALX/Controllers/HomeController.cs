@@ -96,7 +96,7 @@ namespace TSALX.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError( "CodigoInvalido", "Código invalido" );
+                    ModelState.AddModelError( "CodigoInvalido", "Código inválido" );
                     return View();
                 }
             }

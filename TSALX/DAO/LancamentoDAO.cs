@@ -71,11 +71,20 @@ namespace TSALX.DAO
         
         public decimal emitirSaldo()
         {
-            object oSaldo = _oBD.executarScalar( "SELECT ( sum( if( CodNatureza = 'C', ValorLanc, 0 ) ) - " +
+            try
+            {
+                object oSaldo = _oBD.executarScalar( "SELECT ( sum( if( CodNatureza = 'C', ValorLanc, 0 ) ) - " +
                                                            "         sum( if( CodNatureza = 'D', ValorLanc, 0 ) )  ) " +
                                                            " FROM Lancamento " );
 
-            return oSaldo != DBNull.Value ? Convert.ToDecimal( oSaldo ) : 0;
+                return oSaldo != DBNull.Value ? Convert.ToDecimal( oSaldo ) : 0;
+            }
+            catch( alxExcecao ex )
+            {
+                new TratamentoErro( ex ).tratarErro();
+                return -1;
+                     
+            }
         }
         public List<Models.Lancamentos> emitirExtrato( DateTime pdtmInicial, DateTime pdtmFinal )
         {
