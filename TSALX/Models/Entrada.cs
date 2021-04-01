@@ -43,7 +43,7 @@ namespace TSALX.Models
 
         [Required( ErrorMessage = "Informe o valor da entrada" )]
         [Range( 0.01, 999999.99, ErrorMessage = "O valor não pode ser ZERO" )]
-        [RegularExpression( @"^[0-9]{0,2}\.[0-9]{0,2}$", ErrorMessage = "Informe o valor no padrão 99.99" )]
+        [RegularExpression( @"^[0-9]{0,2}\.?[0-9]{0,2}$", ErrorMessage = "Informe o valor no padrão 99.99" )]
         [Display(Name = "Valor")]
         public decimal ValorEntrada { get; set; }
 
@@ -52,7 +52,7 @@ namespace TSALX.Models
         public char CodSituacao { get; set; }
 
         [Display( Name = "Valor Encerrado")]
-        [RegularExpression( @"^[0-9]{0,2}\.[0-9]{0,2}$", ErrorMessage = "Informe o valor no padrão 99.99" )]
+        [RegularExpression( @"^[0-9]{0,2}\.?[0-9]{0,2}$", ErrorMessage = "Informe o valor no padrão 99.99" )]
         [ValorEncerrado]
         [ValorAnulado]
         public decimal ValorEncerrado { get; set; }
