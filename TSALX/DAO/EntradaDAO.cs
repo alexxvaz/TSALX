@@ -94,8 +94,8 @@ namespace TSALX.DAO
                 oStr.Append( "       WHEN 'A' THEN ( ValorEntrada ) " );
                 oStr.Append( "   END as ValorRetorno, IDLanc " );
                 oStr.Append( "  FROM Entrada e " );
-                oStr.Append( " INNER JOIN Situacaoentrada s on s.CodSituacao = e.CodSituacao " );
-                oStr.Append( " INNER JOIN Mercado m on m.IDMercado = e.IDMercado " );
+                oStr.Append( " INNER JOIN SituacaoEntrada s ON s.CodSituacao = e.CodSituacao " );
+                oStr.Append( " INNER JOIN Mercado m ON m.IDMercado = e.IDMercado " );
                 oStr.AppendFormat( " WHERE e.IDPartida = {0}", _lngPartidaID );
 
                 DataTableReader rd = _oBD.executarQuery( oStr.ToString() );

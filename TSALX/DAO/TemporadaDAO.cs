@@ -62,7 +62,7 @@ namespace TSALX.DAO
                 oStrQuery.Clear();
                 oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao " );
                 oStrQuery.Append( "  FROM Regiao r " );
-                oStrQuery.Append( " INNER JOIN Equipe e ON R.IDRegiao = E.IDRegiao " );
+                oStrQuery.Append( " INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao " );
 
                 if ( shtRegiaoID > 0 )
                     oStrQuery.AppendFormat( " WHERE r.IDRegiao = {0} ", shtRegiaoID );

@@ -218,7 +218,7 @@ namespace TSALX.DAO
                 oStr.Append( "INNER JOIN Regiao r2 on r2.IDRegiao = e2.IDRegiao " );
                 oStr.Append( "INNER JOIN Regiao r3 on r3.IDRegiao = c.IDRegiao " );
                 oStr.AppendFormat( "WHERE DataPartida BETWEEN '{0:yyyy-MM-dd}' AND '{1:yyyy-MM-dd}'", pdtmInicial, pdtmFinal );
-                oStr.Append( "ORDER BY P.DataPartida DESC, p.IDPartida " );
+                oStr.Append( "ORDER BY p.DataPartida DESC, p.IDPartida " );
 
                 lstRet = new List<Models.Partidas>();
                 DataTableReader rd = _oBD.executarQuery( oStr.ToString() );

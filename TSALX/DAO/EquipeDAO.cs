@@ -23,7 +23,7 @@ namespace TSALX.DAO
 
             try
             {
-                DataTableReader rd = _oBD.executarQuery( "SELECT IDEquipe, NomeEquipe, NomeRegiao, SiglaRegiao FROM Regiao r INNER JOIN Equipe e ON R.IDRegiao = E.IDRegiao ORDER BY NomeRegiao, NomeEquipe" );
+                DataTableReader rd = _oBD.executarQuery( "SELECT IDEquipe, NomeEquipe, NomeRegiao, SiglaRegiao FROM Regiao r INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao ORDER BY NomeRegiao, NomeEquipe" );
 
                 while( rd.Read() )
                 {

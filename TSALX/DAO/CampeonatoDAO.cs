@@ -26,7 +26,7 @@ namespace TSALX.DAO
 
                 oStr.Append( "SELECT t.IDEquipe, NomeEquipe, NomeRegiao, SiglaRegiao " );
                 oStr.Append( "  FROM Regiao r " );
-                oStr.Append( " INNER JOIN Equipe e ON R.IDRegiao = E.IDRegiao " );
+                oStr.Append( " INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao " );
                 oStr.Append( " INNER JOIN Temporada t on e.IDEquipe = t.IDEquipe " );
                 oStr.AppendFormat( " WHERE t.IDCampeonato = {0} ", pintCampeonato );
                 oStr.Append( " ORDER BY NomeEquipe " );
@@ -65,9 +65,9 @@ namespace TSALX.DAO
                 string strQuery = string.Empty;
 
                 if (!pblnAtivo)
-                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato FROM Regiao r INNER JOIN Campeonato c ON R.IDRegiao = C.IDRegiao order by NomeCampeonato ";
+                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato FROM Regiao r INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao ORDER BY NomeCampeonato ";
                 else
-                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato FROM Regiao r INNER JOIN Campeonato c ON R.IDRegiao = C.IDRegiao WHERE AtivoCampeonato = 1 ORDER BY NomeCampeonato ";
+                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato FROM Regiao r INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao WHERE AtivoCampeonato = 1 ORDER BY NomeCampeonato ";
 
                 DataTableReader rd = _oBD.executarQuery( strQuery );
 
