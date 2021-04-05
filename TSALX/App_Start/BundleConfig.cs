@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
 namespace TSALX
 {
@@ -10,8 +6,14 @@ namespace TSALX
     {
         public static void RegisterBundles( BundleCollection  bundles )
         {
+            bundles.Add( new ScriptBundle( "~/Content/script" ).Include(
+                        "~/Content/script/jquery.validate.js",
+                        "~/Content/script/jquery.validate.unobtrusive.js",
+                        "~/Content/script/tsalx.js" ) );
+
             bundles.Add( new StyleBundle( "~/Content/css" )
-                         .Include( "~/Content/css/tema.css", "~/Content/css/tsalx.css" ) );
+                         .Include( "~/Content/css/tema.css", 
+                                   "~/Content/css/tsalx.css" ) );
         }
     }
 }
