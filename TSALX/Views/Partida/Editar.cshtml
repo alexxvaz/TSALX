@@ -148,14 +148,13 @@
             }
 
             <td class="text-right valor @(item.CodSitucao == 'G' ? "text-success" : ( item.CodSitucao == 'P' ? "text-danger" : "encerrou" ))">@string.Format( System.Globalization.CultureInfo.CreateSpecificCulture( "pt-BR" ), "{0:c2}", item.ValorRetorno )</td>
+            <td class="text-center"><a href="@Url.Action( "Index", "Entrada", new { ID = Model.IDPartida, IDEntrada = item.IDEntrada } )" class="text-secondary"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
             @if( item.IDLancamento == 0 )
             {
-                <td class="text-center"><a href="@Url.Action( "Index", "Entrada", new { ID = Model.IDPartida, IDEntrada = item.IDEntrada } )" class="text-secondary"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
                 <td class="text-center"><a href="@Url.Action( "ExcluirEntrada", "Partida", new { ID = Model.IDPartida, IDEntrada = item.IDEntrada } )" onclick="return confirm('Deseja excluir a entrada @item.NomeMercado [@item.TipoAposta]?');" class="text-danger"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a></td>
             }
             else
             {
-                <td>&nbsp;</td>
                 <td>&nbsp;</td>
             }
 

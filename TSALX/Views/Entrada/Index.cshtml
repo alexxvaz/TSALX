@@ -63,43 +63,85 @@
 
                 <div class="card-body">
 
-                    <div class="form-group">
-                        @Html.LabelFor( m => m.IDMercado )
-                        @Html.DropDownListFor( m => m.IDMercado, new SelectList( Model.ListaMercado, "IDMercado", "Nome" ), "(selecione)", new { @class = "form-control" } )
-                        @Html.ValidationMessageFor( m => m.IDMercado )
-                    </div>
+                    @if ( Model.IDLancamento == 0 )
+                    {
+                        <div class="form-group">
+                            @Html.LabelFor( m => m.IDMercado )
+                            @Html.DropDownListFor( m => m.IDMercado, new SelectList( Model.ListaMercado, "IDMercado", "Nome" ), "(selecione)", new { @class = "form-control" } )
+                            @Html.ValidationMessageFor( m => m.IDMercado )
+                        </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor( m => m.TipoAposta )
-                        @Html.TextBoxFor( m => m.TipoAposta, new { @class = "form-control" } )
-                        @Html.ValidationMessageFor( m => m.TipoAposta )
-                    </div>
+                        <div class="form-group">
+                            @Html.LabelFor( m => m.TipoAposta )
+                            @Html.TextBoxFor( m => m.TipoAposta, new { @class = "form-control" } )
+                            @Html.ValidationMessageFor( m => m.TipoAposta )
+                        </div>
 
-                    <div class="form-row">
-                        <div class="col-lg-6">
-                            @Html.LabelFor( m => m.ODD )
-                            @Html.TextBoxFor( m => m.ODD, new { @class = "form-control numero", @autocomplete = "off" } )
-                            @Html.ValidationMessageFor( m => m.ODD )
+                        <div class="form-row">
+                            <div class="col-lg-6">
+                                @Html.LabelFor( m => m.ODD )
+                                @Html.TextBoxFor( m => m.ODD, new { @class = "form-control numero", @autocomplete = "off" } )
+                                @Html.ValidationMessageFor( m => m.ODD )
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.LabelFor( m => m.ValorEntrada )
+                                @Html.TextBoxFor( m => m.ValorEntrada, new { @class = "form-control numero", @autocomplete = "off" } )
+                                @Html.ValidationMessageFor( m => m.ValorEntrada )
+                            </div>
                         </div>
-                        <div class="col-lg-6">
-                            @Html.LabelFor( m => m.ValorEntrada )
-                            @Html.TextBoxFor( m => m.ValorEntrada, new { @class = "form-control numero", @autocomplete = "off" } )
-                            @Html.ValidationMessageFor( m => m.ValorEntrada )
-                        </div>
-                    </div>
 
-                    <div class="form-row mt-3">
-                        <div class="col-lg-6">
-                            @Html.LabelFor( m => m.CodSituacao )
-                            @Html.DropDownListFor( m => m.CodSituacao, new SelectList( Model.ListaEntrada, "Codigo", "Nome" ), "(selecione)", new { @class = "form-control" } )
-                            @Html.ValidationMessageFor( m => m.CodSituacao )
+                        <div class="form-row mt-3">
+                            <div class="col-lg-6">
+                                @Html.LabelFor( m => m.CodSituacao )
+                                @Html.DropDownListFor( m => m.CodSituacao, new SelectList( Model.ListaEntrada, "Codigo", "Nome" ), "(selecione)", new { @class = "form-control" } )
+                                @Html.ValidationMessageFor( m => m.CodSituacao )
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.LabelFor( m => m.ValorEncerrado )
+                                @Html.TextBoxFor( m => m.ValorEncerrado, new { @class = "form-control numero", @autocomplete = "off" } )
+                                @Html.ValidationMessageFor( m => m.ValorEncerrado )
+                            </div>
                         </div>
-                        <div class="col-lg-6">
-                            @Html.LabelFor( m => m.ValorEncerrado )
-                            @Html.TextBoxFor( m => m.ValorEncerrado, new { @class = "form-control numero", @autocomplete = "off" } )
-                            @Html.ValidationMessageFor( m => m.ValorEncerrado )
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            @Html.LabelFor( m => m.IDMercado )
+                            @Html.DropDownListFor( m => m.IDMercado, new SelectList( Model.ListaMercado, "IDMercado", "Nome" ), "(selecione)", new { @class = "form-control", @disabled = "disabled" } )
+                            @Html.HiddenFor( m => m.IDMercado )
                         </div>
-                    </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor( m => m.TipoAposta )
+                            @Html.TextBoxFor( m => m.TipoAposta, new { @class = "form-control" } )
+                            @Html.ValidationMessageFor( m => m.TipoAposta )
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col-lg-6">
+                                @Html.LabelFor( m => m.ODD )
+                                @Html.TextBoxFor( m => m.ODD, new { @class = "form-control numero", @autocomplete = "off", @disabled = "disabled" } )
+                                @Html.HiddenFor( m => m.ODD )
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.LabelFor( m => m.ValorEntrada )
+                                @Html.TextBoxFor( m => m.ValorEntrada, new { @class = "form-control numero", @autocomplete = "off", @disabled = "disabled" } )
+                                @Html.HiddenFor( m => m.ValorEntrada )
+                            </div>
+                        </div>
+                        <div class="form-row mt-3">
+                            <div class="col-lg-6">
+                                @Html.LabelFor( m => m.CodSituacao )
+                                @Html.DropDownListFor( m => m.CodSituacao, new SelectList( Model.ListaEntrada, "Codigo", "Nome" ), "(selecione)", new { @class = "form-control", @disabled = "disabled" } )
+                                @Html.HiddenFor( m => m.CodSituacao )
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.LabelFor( m => m.ValorEncerrado )
+                                @Html.TextBoxFor( m => m.ValorEncerrado, new { @class = "form-control numero", @autocomplete = "off", @disabled = "disabled" } )
+                                @Html.HiddenFor( m => m.ValorEncerrado )
+                            </div>
+                        </div>
+                    }
 
                 </div>
 
