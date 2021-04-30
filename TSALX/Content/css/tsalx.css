@@ -87,3 +87,7 @@ body{
 .credito {
     color: #0041C2;
 }
+.bandeira {
+    max-width: 32px;
+    height: auto;
+}

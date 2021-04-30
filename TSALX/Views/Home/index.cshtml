@@ -57,12 +57,12 @@
                     <div class="row">
                         <div class="col-lg-1 font-weight-bold text-left my-auto"><a href="@Url.Action( "editar", "Partida", new { ID = item.IDPartida } )" class="text-warning"><i class="fa fa-futbol-o" aria-hidden="true"></i></a></div>
                         <div class="col-lg-4 font-weight-bold my-auto text-center partida-cabecalho-fonte">
-                            <img src="@item.BanEquipe1" alt="tsalx - Bandeira" /> @item.Equipe1
+                            <img src="@item.BanEquipe1" class="bandeira" alt="tsalx - Bandeira" /> @item.Equipe1
                             vs
-                            @item.Equipe2 <img src="@item.BanEquipe2" alt="tsalx - Bandeira" />
+                            @item.Equipe2 <img src="@item.BanEquipe2" class="bandeira" alt="tsalx - Bandeira" />
                         </div>
                         <div class="col-lg-2 font-weight-bold my-auto text-center partida-cabecalho-fonte">@string.Format( "{0:dd/MMM/yyyy}", item.DataPartida )</div>
-                        <div class="col-lg-4 font-weight-bold my-auto partida-cabecalho-fonte"><img src="@item.BanCamp" alt="tsalx - Bandeira" /> @item.Campeonato</div>
+                        <div class="col-lg-4 font-weight-bold my-auto partida-cabecalho-fonte"><img src="@item.BanCamp" alt="tsalx - Bandeira" class="bandeira" /> @item.Campeonato</div>
                         <div class="col-lg-1 text-right my-auto">
                             <a href="@Url.Content( "#partida" + item.IDPartida)" class="text-warning" data-toggle="collapse" aria-expanded="false" aria-controls="partida1">
                                 <i class="fa fa-chevron-up" aria-hidden="true"></i>

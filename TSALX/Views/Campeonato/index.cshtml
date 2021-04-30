@@ -53,7 +53,7 @@
                         <td>&nbsp;</td>
                     }
 
-                    <td class="text-center"><img src="@item.Bandeira" title="@item.NomeRegiao" alt="tsalx - Equipe" /></td>
+                    <td class="text-center"><img src="@item.Bandeira" title="@item.NomeRegiao" class="bandeira" alt="tsalx - Equipe" /></td>
                     <td>@item.NomeRegiao</td>
                     <td class="text-center"><a href="@Url.Action( "editar", "Campeonato", new { id = item.IDCampeonato } )" class="text-secondary"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
                     <td class="text-center"><a href="@Url.Action( "excluir", "Campeonato", new { id = item.IDCampeonato } )" onclick="return confirm('Deseja excluir o item @item.Nome?');" class="text-danger"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a></td>

@@ -54,7 +54,7 @@ namespace TSALX.DAO
             if( string.IsNullOrWhiteSpace( pstrSigla.Trim() ) )
                 return "/Content/img/fifa.png";
             else
-                return string.Format( "https://www.countryflags.io/{0}/flat/32.png", pstrSigla.ToString() );
+                return string.Format( "https://flagcdn.com/w40/{0}.jpg", pstrSigla.ToString().ToLower() );
         }
     }
 }
