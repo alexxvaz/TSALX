@@ -14,7 +14,7 @@ namespace TSALX.Controllers
         {
             ModelState.Clear();
 
-            List<Models.CampeonatoLista> lstCamp = new CampeonatoDAO().listar();
+            List<Models.CampeonatoLista> lstCamp = new CampeonatoDAO().listarAtivos();
 
             if( pintCampeonato == null )
                 pintCampeonato = lstCamp.FirstOrDefault().IDCampeonato;
