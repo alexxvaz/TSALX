@@ -203,6 +203,11 @@ namespace TSALX.DAO
                         else
                             oRet.Coluna3Equipe = lstTime.GetRange( intPos, lstTime.Count - intPos ); 
                     }
+                    else
+                    {
+                        oRet.Coluna2Equipe = lstTime.GetRange( intPos, lstTime.Count - intPos );
+                        oRet.Coluna3Equipe = lstTime.GetRange( intPos, lstTime.Count - intPos );
+                    }
 
                 }
             }
