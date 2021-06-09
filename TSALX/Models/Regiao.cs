@@ -7,7 +7,7 @@ namespace TSALX.Models
         public short IDRegiao { get; set; }
         [Required( ErrorMessage ="Informe o nome da região")]
         public string Nome { get; set; }
-        [StringLength(2, ErrorMessage = "No máximo 2 caracteres" )]
+        [StringLength(6, ErrorMessage = "No máximo 6 caracteres" )]
         public string Sigla { get; set; }
         public string Bandeira { get; set; }
     }

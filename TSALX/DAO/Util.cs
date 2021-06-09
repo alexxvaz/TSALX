@@ -53,6 +53,8 @@ namespace TSALX.DAO
         {
             if( string.IsNullOrWhiteSpace( pstrSigla.Trim() ) )
                 return "/Content/img/fifa.png";
+            else if( pstrSigla == "AM_SUL" )
+                return "/Content/img/conmebol.png";
             else
                 return string.Format( "https://flagcdn.com/w40/{0}.jpg", pstrSigla.ToString().ToLower() );
         }
