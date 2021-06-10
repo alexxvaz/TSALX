@@ -16,6 +16,8 @@ namespace TSALX.Models
         [StringLength(30, ErrorMessage ="O nome da equipe deve ser no máximo 30 caracteres")]
         public string Nome { get; set; }
 
+        [Display( Name = "Seleção do país?" )]
+        public bool Selecao { get; set; }
     }
 
     public class EquipeLista
@@ -24,5 +26,6 @@ namespace TSALX.Models
         public string Nome { get; set; }
         public string NomeRegiao { get; set; }
         public string Bandeira { get; set; }
+        public bool Selecao { get; set; }
     }
 }

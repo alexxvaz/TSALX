@@ -23,7 +23,7 @@ namespace TSALX.DAO
 
             try
             {
-                DataTableReader rd = _oBD.executarQuery( "SELECT IDEquipe, NomeEquipe, NomeRegiao, SiglaRegiao FROM Regiao r INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao ORDER BY NomeRegiao, NomeEquipe" );
+                DataTableReader rd = _oBD.executarQuery( "SELECT IDEquipe, NomeEquipe, NomeRegiao, SiglaRegiao, SelecaoEquipe FROM Regiao r INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao ORDER BY NomeRegiao, NomeEquipe" );
 
                 while( rd.Read() )
                 {
@@ -32,7 +32,8 @@ namespace TSALX.DAO
                         IDEquipe = Convert.ToInt32( rd[ "IDEquipe" ] ),
                         Nome = rd[ "NomeEquipe" ].ToString(),
                         NomeRegiao = rd[ "NomeRegiao" ].ToString(),
-                        Bandeira = Util.informarBandeira( rd[ "SiglaRegiao" ].ToString() )
+                        Bandeira = Util.informarBandeira( rd[ "SiglaRegiao" ].ToString() ),
+                        Selecao = Convert.ToBoolean( rd["SelecaoEquipe"] )
 
                     } );
                 }
@@ -59,7 +60,7 @@ namespace TSALX.DAO
                     if( intProximoID > 0 )
                     {
                         oStrDML.Append( "INSERT INTO Equipe " );
-                        oStrDML.AppendFormat( "VALUES ( {0}, {1}, '{2}' )", intProximoID, pobjEquipe.IDRegiao, pobjEquipe.Nome.Replace( "'", "''" ) );
+                        oStrDML.AppendFormat( "VALUES ( {0}, {1}, '{2}', {3} )", intProximoID, pobjEquipe.IDRegiao, pobjEquipe.Nome.Replace( "'", "''" ), pobjEquipe.Selecao );
                     }
                     else
                         throw new alxExcecao( "Não foi informado o próximo IDEquipe", ErroTipo.Dados );
@@ -69,6 +70,7 @@ namespace TSALX.DAO
                     oStrDML.Append( "UPDATE Equipe SET " );
                     oStrDML.AppendFormat( "NomeEquipe = '{0}' ", pobjEquipe.Nome.Replace( "'", "''" ) );
                     oStrDML.AppendFormat( ", IDRegiao = {0}", pobjEquipe.IDRegiao );
+                    oStrDML.AppendFormat( ", SelecaoEquipe = {0}", pobjEquipe.Selecao );
                     oStrDML.AppendFormat( " WHERE IDEquipe = {0}", pobjEquipe.IDEquipe );
                 }
 
@@ -113,7 +115,7 @@ namespace TSALX.DAO
 
             try
             {
-                DataTableReader rd = _oBD.executarQuery( "SELECT IDEquipe, IDRegiao, NomeEquipe FROM Equipe WHERE IDEquipe = {0}", pintID );
+                DataTableReader rd = _oBD.executarQuery( "SELECT IDEquipe, IDRegiao, NomeEquipe, SelecaoEquipe FROM Equipe WHERE IDEquipe = {0}", pintID );
 
                 if( rd.Read() )
                 {
@@ -121,7 +123,8 @@ namespace TSALX.DAO
                     {
                         IDEquipe = rd.GetInt32( 0 ),
                         IDRegiao = rd.GetInt16( 1 ),
-                        Nome = rd[ 2 ].ToString()
+                        Nome = rd[ 2 ].ToString(), 
+                        Selecao = rd.GetBoolean( 3 )
                     };
                 }
             }

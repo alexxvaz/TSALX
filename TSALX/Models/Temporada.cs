@@ -21,6 +21,7 @@ namespace TSALX.Models
         public string NomeEquipe { get; set; }
         public string Bandeira { get; set; }
         public bool Participa { get; set; }
+        public bool Selecao { get; set; }
 
     }
 

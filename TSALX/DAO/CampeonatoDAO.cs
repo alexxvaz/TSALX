@@ -65,9 +65,9 @@ namespace TSALX.DAO
                 string strQuery = string.Empty;
 
                 if (!pblnAtivo)
-                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato FROM Regiao r INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao ORDER BY NomeCampeonato ";
+                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato, SelecaoCampeonato FROM Regiao r INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao ORDER BY NomeCampeonato ";
                 else
-                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato FROM Regiao r INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao WHERE AtivoCampeonato = 1 ORDER BY NomeCampeonato ";
+                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato, SelecaoCampeonato FROM Regiao r INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao WHERE AtivoCampeonato = 1 ORDER BY NomeCampeonato ";
 
                 DataTableReader rd = _oBD.executarQuery( strQuery );
 
@@ -79,7 +79,8 @@ namespace TSALX.DAO
                         Nome = rd[ "NomeCampeonato" ].ToString(),
                         NomeRegiao = rd[ "NomeRegiao" ].ToString(),
                         Bandeira = Util.informarBandeira( rd[ "SiglaRegiao"].ToString() ),
-                        Ativo = Convert.ToBoolean( rd[ "AtivoCampeonato" ] )
+                        Ativo = Convert.ToBoolean( rd[ "AtivoCampeonato" ] ),
+                        Selecao = Convert.ToBoolean( rd["SelecaoCampeonato"] )
                         
                     } );
                 }
@@ -115,7 +116,7 @@ namespace TSALX.DAO
                     if( intProximoID > 0 )
                     {
                         oStrDML.Append( "INSERT INTO Campeonato " );
-                        oStrDML.AppendFormat( "VALUES ( {0}, {1}, '{2}', {3} )", intProximoID, pobjCampeonato.IDRegiao, pobjCampeonato.Nome.Replace( "'", "''" ), pobjCampeonato.Ativo );
+                        oStrDML.AppendFormat( "VALUES ( {0}, {1}, '{2}', {3}, {4} )", intProximoID, pobjCampeonato.IDRegiao, pobjCampeonato.Nome.Replace( "'", "''" ), pobjCampeonato.Ativo, pobjCampeonato.Selecao );
                     }
                     else
                         throw new alxExcecao( "Não foi informado o próximo IDCampeonato", ErroTipo.Dados );
@@ -126,6 +127,7 @@ namespace TSALX.DAO
                     oStrDML.AppendFormat( "NomeCampeonato = '{0}' ", pobjCampeonato.Nome.Replace( "'", "''" ) );
                     oStrDML.AppendFormat( ", IDRegiao = {0}", pobjCampeonato.IDRegiao );
                     oStrDML.AppendFormat( ", AtivoCampeonato = {0}", pobjCampeonato.Ativo );
+                    oStrDML.AppendFormat( ", SelecaoCampeonato = {0}", pobjCampeonato.Selecao );
                     oStrDML.AppendFormat( " WHERE IDCampeonato = {0}", pobjCampeonato.IDCampeonato );
                 }
 
@@ -171,7 +173,7 @@ namespace TSALX.DAO
 
             try
             {
-                DataTableReader rd = _oBD.executarQuery( "SELECT IDCampeonato, IDRegiao, NomeCampeonato, AtivoCampeonato FROM Campeonato WHERE IDCampeonato = {0}", pintID );
+                DataTableReader rd = _oBD.executarQuery( "SELECT IDCampeonato, IDRegiao, NomeCampeonato, AtivoCampeonato, SelecaoCampeonato FROM Campeonato WHERE IDCampeonato = {0}", pintID );
 
                 if( rd.Read() )
                 {
@@ -180,7 +182,8 @@ namespace TSALX.DAO
                         IDCampeonato = rd.GetInt32( 0 ),
                         IDRegiao = rd.GetInt16( 1 ),
                         Nome = rd[ 2 ].ToString(),
-                        Ativo = rd.GetBoolean( 3 )
+                        Ativo = rd.GetBoolean( 3 ),
+                        Selecao = rd.GetBoolean( 4 )
                     };
 
                     List<Models.EquipeLista> lstTime = this.listarTimes( pintID );

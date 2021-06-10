@@ -70,6 +70,11 @@
                             @Html.CheckBoxFor( x => equipe.Participa, new { @value = @equipe.IDEquipe } )
                             <span class="@(equipe.Participa? "text-dark font-weight-bold":string.Empty)">
                                 @Html.DisplayFor( x => equipe.NomeEquipe )
+                                @if ( equipe.Selecao )
+                                {
+                                    <span>&nbsp;[seleção]</span>
+                                    <i class="fa fa-trophy" aria-hidden="true"></i>
+                                }
                             </span>
 
                         </div>
@@ -93,6 +98,11 @@
                             @Html.CheckBoxFor( x => equipe.Participa, new { @value = @equipe.IDEquipe } )
                             <span class="@(equipe.Participa? "text-dark font-weight-bold":string.Empty)">
                                 @Html.DisplayFor( x => equipe.NomeEquipe )
+                                @if ( equipe.Selecao )
+                                {
+                                    <span>&nbsp;[seleção]</span>
+                                    <i class="fa fa-trophy" aria-hidden="true"></i>
+                                }
                             </span>
 
                         </div>
@@ -116,6 +126,11 @@
                             @Html.CheckBoxFor( x => equipe.Participa, new { @value = @equipe.IDEquipe } )
                             <span class="@(equipe.Participa? "text-dark font-weight-bold":string.Empty)">
                                 @Html.DisplayFor( x => equipe.NomeEquipe )
+                                @if ( equipe.Selecao )
+                                {
+                                    <span>&nbsp;[seleção]</span>
+                                    <i class="fa fa-trophy" aria-hidden="true"></i>
+                                }
                             </span>
                         </div>
 
@@ -137,6 +152,11 @@
                             @Html.CheckBoxFor( x => equipe.Participa, new { @value = @equipe.IDEquipe } )
                             <span class="@(equipe.Participa? "text-dark font-weight-bold":string.Empty)">
                                 @Html.DisplayFor( x => equipe.NomeEquipe )
+                                @if ( equipe.Selecao )
+                                {
+                                    <span>&nbsp;[seleção]</span>
+                                    <i class="fa fa-trophy" aria-hidden="true"></i>
+                                }
                             </span>
 
                         </div>

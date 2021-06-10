@@ -31,6 +31,7 @@
             <thead class="bg-primary text-white">
                 <tr>
                     <th class="w-50">Nome</th>
+                    <th class="text-center">Seleções</th>
                     <th class="text-center">Ativo</th>
                     <th>&nbsp;</th>
                     <th>Região</th>
@@ -44,7 +45,15 @@
                 {
                 <tr>
                     <td class="w-50">@item.Nome</td>
-                    @if( item.Ativo )
+                    @if( item.Selecao )
+                    {
+                        <td class="text-center"><i class="fa fa-trophy" aria-hidden="true"></i></td>
+                    }
+                    else
+                    {
+                        <td>&nbsp;</td>
+                    }
+                    @if ( item.Ativo )
                     {
                         <td class="text-center"><i class="fa fa-check" aria-hidden="true"></i></td>
                     }

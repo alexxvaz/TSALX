@@ -12,6 +12,8 @@ namespace TSALX.Models
         public List<EquipeLista> Coluna3Equipe { get; set; }
 
         public bool Ativo { get; set; }
+        [Display( Name ="Campeonato de seleção")]
+        public bool Selecao { get; set; }
 
         [Display( Name = "Região" )]
         [Required( ErrorMessage = "Selecione uma região" )]
@@ -29,5 +31,6 @@ namespace TSALX.Models
         public string NomeRegiao { get; set; }
         public bool Ativo { get; set; }
         public string Bandeira { get; set; }
+        public bool Selecao { get; set; }
     }
 }

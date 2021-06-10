@@ -13,11 +13,13 @@ namespace TSALX.DAO
     {
         private BD _oBD;
         private int _intCampeonato;
+        private bool _blnSelecao;
 
         public TemporadaDAO( int pintCampeonato )
         {
             _intCampeonato = pintCampeonato;
             _oBD = new BD( Util.ConexaoBD );
+            _blnSelecao = Convert.ToBoolean( _oBD.executarScalar( "SELECT SelecaoCampeonato FROM Campeonato WHERE IDCampeonato = {0}", _intCampeonato ) );
         }
 
         private List<int> listarEquipes()
@@ -54,19 +56,22 @@ namespace TSALX.DAO
                 oStrQuery.Append( "SELECT r.IDRegiao " );
                 oStrQuery.Append( "  FROM Regiao r " );
                 oStrQuery.Append( " INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao " );
-                oStrQuery.Append( " WHERE ( SiglaRegiao IS NOT NULL AND SiglaRegiao NOT IN ('EU') ) " );
+                oStrQuery.Append( " WHERE ( SiglaRegiao IS NOT NULL AND SiglaRegiao NOT IN ('EU', 'AM_SUL') ) " );
                 oStrQuery.AppendFormat(" AND IDCampeonato = {0} ", _intCampeonato );
 
                 short shtRegiaoID = Convert.ToInt16( _oBD.executarScalar( oStrQuery.ToString() ) );
 
                 oStrQuery.Clear();
-                oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao " );
+                oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao, SelecaoEquipe " );
                 oStrQuery.Append( "  FROM Regiao r " );
                 oStrQuery.Append( " INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao " );
 
                 if ( shtRegiaoID > 0 )
                     oStrQuery.AppendFormat( " WHERE r.IDRegiao = {0} ", shtRegiaoID );
+                else if ( _blnSelecao )
+                    oStrQuery.AppendFormat( " WHERE e.SelecaoEquipe = 1 " );
 
+                    
                 oStrQuery.Append( " ORDER BY NomeEquipe " );
 
                 DataTableReader rd = _oBD.executarQuery( oStrQuery.ToString() );
@@ -82,7 +87,9 @@ namespace TSALX.DAO
                         IDEquipe = rd.GetInt32( 0 ), // IDEquipe
                         NomeEquipe = rd[ "NomeEquipe" ].ToString(),
                         Bandeira = Util.informarBandeira( rd[ "SiglaRegiao" ].ToString() ),
-                        Participa = lstTemporada.Contains( rd.GetInt32( 0 ) )
+                        Participa = lstTemporada.Contains( rd.GetInt32( 0 ) ),
+                        Selecao = rd.GetBoolean( 5 ) // Seleção
+
                     } );
                 }
 
