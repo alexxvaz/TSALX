@@ -23,18 +23,25 @@ namespace TSALX.DAO
 
             try
             {
-                DataTableReader rd = _oBD.executarQuery( "SELECT IDEquipe, NomeEquipe, NomeRegiao, SiglaRegiao, SelecaoEquipe FROM Regiao r INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao ORDER BY NomeRegiao, NomeEquipe" );
+                StringBuilder oStrSQL = new StringBuilder();
+
+                oStrSQL.Append( " SELECT e.IDEquipe, NomeEquipe, NomeRegiao, SiglaRegiao, " );
+                oStrSQL.Append( " (SELECT IDEquipe FROM Regiao r WHERE IDEquipe = e.IDEquipe) AS Selecao " );
+                oStrSQL.Append( " FROM Regiao r " );
+                oStrSQL.Append( " INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao " );
+                oStrSQL.Append( " ORDER BY NomeRegiao, NomeEquipe" );
+
+                DataTableReader rd = _oBD.executarQuery( oStrSQL.ToString() );
 
                 while( rd.Read() )
                 {
                     lst.Add( new Models.EquipeLista()
                     {
-                        IDEquipe = Convert.ToInt32( rd[ "IDEquipe" ] ),
-                        Nome = rd[ "NomeEquipe" ].ToString(),
-                        NomeRegiao = rd[ "NomeRegiao" ].ToString(),
-                        Bandeira = Util.informarBandeira( rd[ "SiglaRegiao" ].ToString() ),
-                        Selecao = Convert.ToBoolean( rd["SelecaoEquipe"] )
-
+                        IDEquipe = Convert.ToInt32( rd["IDEquipe"] ),
+                        Nome = rd["NomeEquipe"].ToString(),
+                        NomeRegiao = rd["NomeRegiao"].ToString(),
+                        Bandeira = Util.informarBandeira( rd["SiglaRegiao"].ToString() ),
+                        Selecao = !rd.IsDBNull( 4 )
                     } );
                 }
 
@@ -47,8 +54,10 @@ namespace TSALX.DAO
 
             return lst;
         }
-        public void salvar( Models.Equipe pobjEquipe )
+        public int salvar( Models.Equipe pobjEquipe )
         {
+            int intIDRet = -1;
+
             try
             {
                 StringBuilder oStrDML = new StringBuilder();
@@ -60,7 +69,9 @@ namespace TSALX.DAO
                     if( intProximoID > 0 )
                     {
                         oStrDML.Append( "INSERT INTO Equipe " );
-                        oStrDML.AppendFormat( "VALUES ( {0}, {1}, '{2}', {3} )", intProximoID, pobjEquipe.IDRegiao, pobjEquipe.Nome.Replace( "'", "''" ), pobjEquipe.Selecao );
+                        oStrDML.AppendFormat( "VALUES ( {0}, {1}, '{2}' )", intProximoID, pobjEquipe.IDRegiao, pobjEquipe.Nome.Replace( "'", "''" ) );
+
+                        intIDRet = intProximoID;
                     }
                     else
                         throw new alxExcecao( "Não foi informado o próximo IDEquipe", ErroTipo.Dados );
@@ -70,14 +81,17 @@ namespace TSALX.DAO
                     oStrDML.Append( "UPDATE Equipe SET " );
                     oStrDML.AppendFormat( "NomeEquipe = '{0}' ", pobjEquipe.Nome.Replace( "'", "''" ) );
                     oStrDML.AppendFormat( ", IDRegiao = {0}", pobjEquipe.IDRegiao );
-                    oStrDML.AppendFormat( ", SelecaoEquipe = {0}", pobjEquipe.Selecao );
                     oStrDML.AppendFormat( " WHERE IDEquipe = {0}", pobjEquipe.IDEquipe );
+
+                    intIDRet = pobjEquipe.IDEquipe;
                 }
 
                 _oBD.executarDML( oStrDML.ToString() );
             }
             catch( alxExcecao ex )
             {
+                intIDRet = -1;
+
                 if( ex.Mensagem.Contains( "UK_Equipe_Nome" ) )
                     throw new alxExcecao( "O nome da equipe '{0}' já foi cadastrada para esta região", pobjEquipe.Nome );
                 else
@@ -91,16 +105,26 @@ namespace TSALX.DAO
             }
             catch( Exception ex )
             {
+                intIDRet = -1;
+
                 new TratamentoErro( ex ).tratarErro();
                 throw new alxExcecao( "Problema ao salvar a Equipe" );
             }
+            
+            return intIDRet;
+            
         }
         public void excluir( int pintID )
         {
 
             try
             {
-                _oBD.executarDML( "DELETE FROM Equipe WHERE IDEquipe = {0}", pintID );
+                List<string> lstExcluir = new List<string>();
+
+                lstExcluir.Add( string.Format( "UPDATE Regiao SET IDEquipe = NULL WHERE IDEquipe = {0}", pintID ) );
+                lstExcluir.Add( string.Format( "DELETE FROM Equipe WHERE IDEquipe = {0}", pintID ) );
+
+                _oBD.executarDML( lstExcluir );
             }
             catch( alxExcecao ex )
             {
@@ -115,7 +139,10 @@ namespace TSALX.DAO
 
             try
             {
-                DataTableReader rd = _oBD.executarQuery( "SELECT IDEquipe, IDRegiao, NomeEquipe, SelecaoEquipe FROM Equipe WHERE IDEquipe = {0}", pintID );
+                DataTableReader rd = _oBD.executarQuery( "SELECT e.IDEquipe, e.IDRegiao, e.NomeEquipe, if( r.IDEquipe IS NOT NULL, true, false ) AS Selecao " +
+                                                           "FROM Equipe e " +
+                                                           "LEFT JOIN Regiao r ON r.IDEquipe = e.IDEquipe " + 
+                                                          "WHERE e.IDEquipe = {0}", pintID );
 
                 if( rd.Read() )
                 {
@@ -123,8 +150,8 @@ namespace TSALX.DAO
                     {
                         IDEquipe = rd.GetInt32( 0 ),
                         IDRegiao = rd.GetInt16( 1 ),
-                        Nome = rd[ 2 ].ToString(), 
-                        Selecao = rd.GetBoolean( 3 )
+                        Nome = rd[2].ToString(),
+                        Selecao = Convert.ToBoolean( rd[ "Selecao" ] )
                     };
                 }
             }

@@ -37,6 +37,14 @@
                 @Html.ValidationMessageFor( m => m.Sigla )
             </div>
         </div>
+        <div class="col-lg-9" style="padding-top: 3.25%">
+            <div class="custom-switch custom-control-inline">
+
+                @Html.CheckBoxFor( m => m.TemSelecao, new { @class = "custom-control-input" } )
+                @Html.LabelFor( m => m.TemSelecao, new { @class = "custom-control-label" } )
+
+            </div>
+        </div>
     </div>
 
     <div class="row">

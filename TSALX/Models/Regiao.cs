@@ -10,5 +10,7 @@ namespace TSALX.Models
         [StringLength(6, ErrorMessage = "No máximo 6 caracteres" )]
         public string Sigla { get; set; }
         public string Bandeira { get; set; }
+        [Display(Name ="Tem seleção nacional")]
+        public bool TemSelecao { get; set; }
     }
 }

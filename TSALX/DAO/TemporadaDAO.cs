@@ -46,6 +46,7 @@ namespace TSALX.DAO
 
         public Dictionary<int, List<Models.TemporadaEquipe>> listar()
         {
+            const short EUA_MLS = 44;
 
             Dictionary<int, List<Models.TemporadaEquipe>> dicRet = null;
 
@@ -56,27 +57,50 @@ namespace TSALX.DAO
                 oStrQuery.Append( "SELECT r.IDRegiao " );
                 oStrQuery.Append( "  FROM Regiao r " );
                 oStrQuery.Append( " INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao " );
-                oStrQuery.Append( " WHERE ( SiglaRegiao IS NOT NULL AND SiglaRegiao NOT IN ('EU', 'AM_SUL') ) " );
+                oStrQuery.Append( " WHERE ( SiglaRegiao IS NOT NULL AND SiglaRegiao NOT IN ('EU', 'AM-SUL') ) " );
                 oStrQuery.AppendFormat(" AND IDCampeonato = {0} ", _intCampeonato );
 
                 short shtRegiaoID = Convert.ToInt16( _oBD.executarScalar( oStrQuery.ToString() ) );
-
+                
+                // Listar os times
                 oStrQuery.Clear();
-                oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao, SelecaoEquipe " );
-                oStrQuery.Append( "  FROM Regiao r " );
-                oStrQuery.Append( " INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao " );
 
-                if ( shtRegiaoID > 0 )
+                if ( shtRegiaoID == EUA_MLS ) // +1 Região (EUA e Canadá)
+                {
+                    oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao,  " );
+                    oStrQuery.Append( " (SELECT IDEquipe FROM Regiao r WHERE IDEquipe = e.IDEquipe) AS Selecao " );
+                    oStrQuery.Append( "  FROM Regiao r " );
+                    oStrQuery.Append( " INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao " );
+                    oStrQuery.Append( " WHERE r.IDRegiao IN (44, 45) " );
+                    oStrQuery.Append( " ORDER BY NomeEquipe " );
+                }
+                else if ( shtRegiaoID > 0 ) 
+                {
+                    oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao,  " );
+                    oStrQuery.Append( " (SELECT IDEquipe FROM Regiao r WHERE IDEquipe = e.IDEquipe) AS Selecao " );
+                    oStrQuery.Append( "  FROM Regiao r " );
+                    oStrQuery.Append( " INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao " );
                     oStrQuery.AppendFormat( " WHERE r.IDRegiao = {0} ", shtRegiaoID );
+                    oStrQuery.Append( " ORDER BY NomeEquipe " );
+                }
                 else if ( _blnSelecao )
-                    oStrQuery.AppendFormat( " WHERE e.SelecaoEquipe = 1 " );
-
-                    
-                oStrQuery.Append( " ORDER BY NomeEquipe " );
+                {
+                    oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao, 1 AS Selecao " );
+                    oStrQuery.Append( "  FROM Regiao r " );
+                    oStrQuery.Append( " INNER JOIN Equipe e ON e.IDEquipe = r.IDEquipe" );
+                    oStrQuery.Append( " ORDER BY NomeEquipe " );
+                }
+                else
+                {
+                    oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao,  " );
+                    oStrQuery.Append( " (SELECT IDEquipe FROM Regiao r WHERE IDEquipe = e.IDEquipe) AS Selecao " );
+                    oStrQuery.Append( "  FROM Regiao r " );
+                    oStrQuery.Append( " INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao " );
+                    oStrQuery.Append( " ORDER BY NomeEquipe " );
+                }
 
                 DataTableReader rd = _oBD.executarQuery( oStrQuery.ToString() );
 
-                
                 List<int> lstTemporada = this.listarEquipes();
                 List<Models.TemporadaEquipe> lstEquipe = new List<Models.TemporadaEquipe>();
 
@@ -88,7 +112,7 @@ namespace TSALX.DAO
                         NomeEquipe = rd[ "NomeEquipe" ].ToString(),
                         Bandeira = Util.informarBandeira( rd[ "SiglaRegiao" ].ToString() ),
                         Participa = lstTemporada.Contains( rd.GetInt32( 0 ) ),
-                        Selecao = rd.GetBoolean( 5 ) // Seleção
+                        Selecao = !rd.IsDBNull( 5 ) // Seleção
 
                     } );
                 }

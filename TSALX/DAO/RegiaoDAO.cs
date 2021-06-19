@@ -17,8 +17,6 @@ namespace TSALX.DAO
             _oBD = new BD( Util.ConexaoBD );
         }
         
-        
-
         public List<Models.Regiao> listar()
         {
             List<Models.Regiao> lst = new List<Models.Regiao>();
@@ -50,6 +48,7 @@ namespace TSALX.DAO
 
         public void salvar( Models.Regiao pobjRegiao )
         {
+            short shtRegiaoID = -1;
             try
             {
                 StringBuilder oStrDML = new StringBuilder();
@@ -63,9 +62,11 @@ namespace TSALX.DAO
                         oStrDML.Append( "INSERT INTO Regiao " );
 
                         if( ! string.IsNullOrEmpty( pobjRegiao.Sigla) )
-                            oStrDML.AppendFormat( "VALUES ( {0}, '{1}', '{2}' )", intProximoID, pobjRegiao.Nome.Replace( "'", "''" ), pobjRegiao.Sigla.ToUpper() );
+                            oStrDML.AppendFormat( "VALUES ( {0}, NULL, '{1}', '{2}' )", intProximoID, pobjRegiao.Nome.Replace( "'", "''" ), pobjRegiao.Sigla.ToUpper() );
                         else
-                            oStrDML.AppendFormat( "VALUES ( {0}, '{1}', NULL )", intProximoID, pobjRegiao.Nome.Replace( "'", "''" ) );
+                            oStrDML.AppendFormat( "VALUES ( {0}, NULL, '{1}', NULL )", intProximoID, pobjRegiao.Nome.Replace( "'", "''" ) );
+
+                        shtRegiaoID = (short) intProximoID;
                     }
                     else
                         throw new alxExcecao( "Não foi informado o próximo IDRegiao", ErroTipo.Dados );
@@ -81,9 +82,38 @@ namespace TSALX.DAO
                         oStrDML.Append( ", SiglaRegiao = NULL" );
 
                     oStrDML.AppendFormat( " WHERE IDRegiao = {0}", pobjRegiao.IDRegiao );
+
+                    shtRegiaoID = pobjRegiao.IDRegiao;
                 }
 
                 _oBD.executarDML( oStrDML.ToString() );
+
+                // -----------------------------------------------------------------------------------------
+                // Se tiver seleção nacional
+                // -----------------------------------------------------------------------------------------
+
+                if ( pobjRegiao.TemSelecao )
+                {
+
+                    object oEquipeID = _oBD.executarScalar( "SELECT IDEquipe FROM Regiao WHERE IDRegiao = {0}", shtRegiaoID );
+                    int intEquipeID = 0;
+
+                    if ( oEquipeID != DBNull.Value )
+                        intEquipeID = Convert.ToInt32( oEquipeID );
+
+                    intEquipeID = new EquipeDAO()
+                                     .salvar( new Models.Equipe()
+                                     {
+                                         IDEquipe = intEquipeID,
+                                         IDRegiao = shtRegiaoID,
+                                         Nome = pobjRegiao.Nome
+                                     });
+
+                    _oBD.executarDML( "UPDATE Regiao SET IDEquipe = {0} WHERE IDRegiao = {1}", intEquipeID, shtRegiaoID );
+                }
+                else
+                    _oBD.executarDML( "UPDATE Regiao SET IDEquipe = NULL WHERE IDRegiao = {0}", shtRegiaoID );
+
             }
             catch( alxExcecao ex )
             {
@@ -95,7 +125,6 @@ namespace TSALX.DAO
                         throw ex;
 
                     new TratamentoErro( ex ).tratarErro();
-
                 }
 
             }
@@ -125,7 +154,7 @@ namespace TSALX.DAO
 
             try
             {
-                DataTableReader rd = _oBD.executarQuery( "SELECT IDRegiao, NomeRegiao, SiglaRegiao FROM Regiao WHERE IDRegiao = {0}", pintID );
+                DataTableReader rd = _oBD.executarQuery( "SELECT IDRegiao, NomeRegiao, SiglaRegiao, IDEquipe FROM Regiao WHERE IDRegiao = {0}", pintID );
 
                 if( rd.Read() )
                 {
@@ -134,7 +163,8 @@ namespace TSALX.DAO
                         IDRegiao = rd.GetInt16( 0 ),
                         Nome = rd[ 1 ].ToString(),
                         Sigla = rd.IsDBNull( 2 ) ? string.Empty : rd[ 2 ].ToString(),
-                        Bandeira = Util.informarBandeira( rd[ 2 ].ToString() )
+                        Bandeira = Util.informarBandeira( rd[ 2 ].ToString() ),
+                        TemSelecao = !rd.IsDBNull( 3 )
                     };
                 }
             }

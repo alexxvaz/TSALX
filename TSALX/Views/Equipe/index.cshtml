@@ -32,7 +32,6 @@
             <thead class="bg-primary text-white">
                 <tr>
                     <th class="w-75">Nome</th>
-                    <th>Selação</th>
                     <th>&nbsp;</th>
                     <th>Região</th>
                     <th>&nbsp;</th>
@@ -44,20 +43,24 @@
                 @foreach( var item in Model )
                 {
                 <tr>
-                    <td class="w-50">@item.Nome @(item.Selecao? "[seleção nacional]": string.Empty )</td>
-                    @if ( item.Selecao )
-                    {
-                        <td class="text-center"><i class="fa fa-check" aria-hidden="true"></i></td>
-                    }
-                    else
-                    {
-                        <td>&nbsp;</td>
-                    }
+                    <td class="w-75">
+
+                        @if ( item.Selecao )
+                        {
+                            <i class="fa fa-certificate" aria-hidden="true"></i>
+                            @item.Nome
+                            <em>(seleção nacional)</em>
+                        }
+                        else
+                        {
+                            @item.Nome
+                        }
+                    </td>
                     <td class="text-center"><img src="@item.Bandeira" title="@item.NomeRegiao" class="bandeira" alt="tsalx - Equipe" /></td>
                     <td>@item.NomeRegiao</td>
                     <td class="text-center"><a href="@Url.Action( "editar", "Equipe", new { id = item.IDEquipe } )" class="text-secondary"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
                     <td class="text-center"><a href="@Url.Action( "excluir", "Equipe", new { id = item.IDEquipe } )" onclick="return confirm('Deseja excluir o item @item.Nome?');" class="text-danger"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a></td>
-                    </tr>
+                </tr>
 
                 }
 
