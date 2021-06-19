@@ -89,5 +89,5 @@ body{
 }
 .bandeira {
     max-width: 32px;
-    height: auto;
+    border: 1px solid #cccccc;
 }
