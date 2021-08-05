@@ -34,6 +34,7 @@ namespace TSALX.Models
 
         [Required(ErrorMessage ="Informe o tipo de aposta")]
         [Display(Name ="Tipo de Aposta")]
+        [MaxLength(30, ErrorMessage = "O tamanho máximo é de 30 caracteres" )]
         public string TipoAposta { get; set; }
 
         [Required (ErrorMessage ="Informe a ODD")]
