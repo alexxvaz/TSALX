@@ -4,7 +4,7 @@
     ViewBag.Title = "Trader Sport ALX";
 }
 
-@if( ViewBag.ErroMensagem != null )
+@if ( ViewBag.ErroMensagem != null )
 {
     <div class="row mt-3">
         <div class="col-lg-12">
@@ -26,7 +26,7 @@
 </div>
 
 <!-- filtro de datas -->
-@using( Html.BeginForm( "Index", "Home", FormMethod.Post, new { @class = "form-inline mb-1" } ) )
+@using ( Html.BeginForm( "Index", "Home", FormMethod.Post, new { @class = "form-inline mb-1" } ) )
 {
     @Html.AntiForgeryToken()
 
@@ -48,23 +48,35 @@
 
 }
 
-@foreach( var item in Model.ListaPartidas )
+@foreach ( var dtmPartida in Model.ListaPartidas.Keys )
 {
+
+    <div class="row mt-3">
+        <div class="col-lg-12">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 
+            @{ 
+                IFormatProvider cultBrasil = new System.Globalization.CultureInfo( "pt-BR" );
+                @dtmPartida.GetDateTimeFormats( cultBrasil )[ 10 ];
+            }
+        </div>
+    </div>
+
+                foreach ( var item in Model.ListaPartidas[dtmPartida] )
+                {
     <div class="row mb-1">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header bg-primary text-light">
                     <div class="row">
                         <div class="col-lg-1 font-weight-bold text-left my-auto"><a href="@Url.Action( "editar", "Partida", new { ID = item.IDPartida } )" class="text-warning"><i class="fa fa-futbol-o" aria-hidden="true"></i></a></div>
-                        <div class="col-lg-4 font-weight-bold my-auto text-center partida-cabecalho-fonte">
+                        <div class="col-lg-6 font-weight-bold my-auto text-center partida-cabecalho-fonte">
                             <img src="@item.BanEquipe1" class="bandeira" alt="tsalx - Bandeira" /> @item.Equipe1
                             vs
                             @item.Equipe2 <img src="@item.BanEquipe2" class="bandeira" alt="tsalx - Bandeira" />
                         </div>
-                        <div class="col-lg-2 font-weight-bold my-auto text-center partida-cabecalho-fonte">@string.Format( "{0:dd/MMM/yyyy}", item.DataPartida )</div>
                         <div class="col-lg-4 font-weight-bold my-auto partida-cabecalho-fonte"><img src="@item.BanCamp" alt="tsalx - Bandeira" class="bandeira" /> @item.Campeonato</div>
                         <div class="col-lg-1 text-right my-auto">
-                            <a href="@Url.Content( "#partida" + item.IDPartida)" class="text-warning" data-toggle="collapse" aria-expanded="false" aria-controls="partida1">
+                            <a href="@Url.Content( "#partida" + item.IDPartida )" class="text-warning" data-toggle="collapse" aria-expanded="false" aria-controls="partida1">
                                 <i class="fa fa-chevron-up" aria-hidden="true"></i>
                             </a>
                         </div>
@@ -82,16 +94,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if( item.ListaEntradas.Count > 0 )
+                            @if ( item.ListaEntradas.Count > 0 )
                             {
-                                foreach( var itmEntrada in item.ListaEntradas )
+                                foreach ( var itmEntrada in item.ListaEntradas )
                                 {
                                     <tr>
                                         <td>@itmEntrada.NomeMercado</td>
                                         <td>@itmEntrada.TipoAposta</td>
                                         <td class="text-right">@itmEntrada.ODD</td>
-                                        <td class="text-right valor @(itmEntrada.CodSitucao == 'G' ? "text-success" : ( itmEntrada.CodSitucao == 'P' ? "text-danger" : "encerrou" ))">@string.Format( System.Globalization.CultureInfo.CreateSpecificCulture( "pt-BR" ), "{0:c2}", itmEntrada.ValorRetorno )</td>
-                                        <td class="text-center @(itmEntrada.CodSitucao == 'G' ? "text-success" : ( itmEntrada.CodSitucao == 'P' ? "text-danger" : "encerrou" ))"><i class="@itmEntrada.Icone" aria-hidden="true"></i> @itmEntrada.NomeSituacao</td>
+                                        <td class="text-right valor @(itmEntrada.CodSitucao == 'G' ? "text-success" : (itmEntrada.CodSitucao == 'P' ? "text-danger" : "encerrou"))">@string.Format( System.Globalization.CultureInfo.CreateSpecificCulture( "pt-BR" ), "{0:c2}", itmEntrada.ValorRetorno )</td>
+                                        <td class="text-center @(itmEntrada.CodSitucao == 'G' ? "text-success" : (itmEntrada.CodSitucao == 'P' ? "text-danger" : "encerrou"))"><i class="@itmEntrada.Icone" aria-hidden="true"></i> @itmEntrada.NomeSituacao</td>
                                     </tr>
                                 }
                             }
@@ -108,6 +120,7 @@
         </div>
 
     </div>
+    }
 }
 
 @section Inicio

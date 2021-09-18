@@ -61,7 +61,7 @@ namespace TSALX.Models
        
         [Required( ErrorMessage = "Informe a data final" )]
         public DateTime DtFinal { get; set; }
-        public List<Partidas> ListaPartidas { get; set; }
+        public Dictionary<DateTime, List<Partidas>> ListaPartidas { get; set; }
     }
 
     #region validação 

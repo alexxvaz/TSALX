@@ -198,9 +198,9 @@ namespace TSALX.DAO
 
             return oRet;
         }
-        public List<Models.Partidas> listar( DateTime pdtmInicial, DateTime pdtmFinal )
+        public Dictionary<DateTime, List<Models.Partidas>> listar( DateTime pdtmInicial, DateTime pdtmFinal )
         {
-            List<Models.Partidas> lstRet = null;
+            Dictionary<DateTime, List<Models.Partidas>> dicRet = null;
 
             try
             {
@@ -220,24 +220,39 @@ namespace TSALX.DAO
                 oStr.AppendFormat( "WHERE DataPartida BETWEEN '{0:yyyy-MM-dd}' AND '{1:yyyy-MM-dd}'", pdtmInicial, pdtmFinal );
                 oStr.Append( "ORDER BY p.DataPartida DESC, p.IDPartida " );
 
-                lstRet = new List<Models.Partidas>();
                 DataTableReader rd = _oBD.executarQuery( oStr.ToString() );
+                dicRet = new Dictionary<DateTime, List<Models.Partidas>>();
+
+                bool blnLeitura = rd.Read();
                 
-                while( rd.Read() )
+                while ( blnLeitura )
                 {
-                    lstRet.Add( new Models.Partidas()
+                    DateTime dtmPartida = Convert.ToDateTime( rd["DataPartida"] );
+                    List<Models.Partidas> lstPartidas = new List<Models.Partidas>();
+
+                    while ( dtmPartida == Convert.ToDateTime( rd["DataPartida"] ) )
                     {
-                        IDPartida = Convert.ToInt64( rd[ "IDPartida" ] ),
-                        DataPartida = Convert.ToDateTime( rd[ "DataPartida" ] ),
-                        Equipe1 = rd[ "Equipe1" ].ToString(),
-                        BanEquipe1 = Util.informarBandeira( rd[ "BanEquipe1"].ToString() ),
-                        Equipe2 = rd[ "Equipe2" ].ToString(),
-                        BanEquipe2 = Util.informarBandeira( rd[ "BanEquipe2" ].ToString() ),
-                        Campeonato = rd[ "NomeCampeonato" ].ToString(),
-                        BanCamp = Util.informarBandeira( rd["BanCamp"].ToString() ),
-                        ListaEntradas = new EntradaDAO( Convert.ToInt64( rd[ "IDPartida" ] ) ).listar()
+                        lstPartidas.Add( new Models.Partidas()
+                        {
+                            IDPartida = Convert.ToInt64( rd["IDPartida"] ),
+                            DataPartida = Convert.ToDateTime( rd["DataPartida"] ),
+                            Equipe1 = rd["Equipe1"].ToString(),
+                            BanEquipe1 = Util.informarBandeira( rd["BanEquipe1"].ToString() ),
+                            Equipe2 = rd["Equipe2"].ToString(),
+                            BanEquipe2 = Util.informarBandeira( rd["BanEquipe2"].ToString() ),
+                            Campeonato = rd["NomeCampeonato"].ToString(),
+                            BanCamp = Util.informarBandeira( rd["BanCamp"].ToString() ),
+                            ListaEntradas = new EntradaDAO( Convert.ToInt64( rd["IDPartida"] ) ).listar()
+
+                        } );
+
+                        blnLeitura = rd.Read();
+
+                        if ( !blnLeitura ) break;
                         
-                    } );
+                    }
+
+                    dicRet.Add( dtmPartida, lstPartidas );
                 }
 
             }
@@ -246,7 +261,7 @@ namespace TSALX.DAO
                 new TratamentoErro( ex ).tratarErro();
             }
 
-            return lstRet;
+            return dicRet;
         }
         public void finalizar( long plngPartidaID )
         {
