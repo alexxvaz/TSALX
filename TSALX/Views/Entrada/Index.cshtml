@@ -32,15 +32,14 @@
                     <div class="col-lg-12 text-dark">Jogo</div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-5 text-right font-weight-bold text-primary">
-                        <img src="@Model.Partida.BanEquipe1" class="bandeira" alt="tsalx - equipe1" />
-                        @Model.Partida.Equipe1
-                    </div>
+                    <div class="col-lg-5 text-right font-weight-bold text-primary">@Model.Partida.Equipe1</div>
                     <div class="col-lg-2 text-center text-primary">vs</div>
-                    <div class="col-lg-5 text-left font-weight-bold text-primary">
-                        @Model.Partida.Equipe2
-                        <img src="@Model.Partida.BanEquipe2" class="bandeira" alt="tsalx - equipe2" />
-                    </div>
+                    <div class="col-lg-5 text-left font-weight-bold text-primary">@Model.Partida.Equipe2</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5 text-right"><img src="@Model.Partida.BanEquipe1" class="bandeira" alt="tsalx - equipe1" /></div>
+                    <div class="col-lg-2 text-center text-primary">&nbsp;</div>
+                    <div class="col-lg-5 text-left" ><img src="@Model.Partida.BanEquipe2" class="bandeira" alt="tsalx - equipe2" /></div>
                 </div>
 
             </div>
