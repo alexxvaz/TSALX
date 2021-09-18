@@ -65,7 +65,7 @@ namespace TSALX.DAO
                 string strQuery = string.Empty;
 
                 if (!pblnAtivo)
-                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato, SelecaoCampeonato FROM Regiao r INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao ORDER BY NomeCampeonato ";
+                    strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato, SelecaoCampeonato FROM Regiao r INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao ORDER BY AtivoCampeonato DESC, NomeCampeonato ";
                 else
                     strQuery = "SELECT IDCampeonato, NomeCampeonato, NomeRegiao, SiglaRegiao, AtivoCampeonato, SelecaoCampeonato FROM Regiao r INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao WHERE AtivoCampeonato = 1 ORDER BY NomeCampeonato ";
 
