@@ -55,6 +55,8 @@ namespace TSALX.DAO
                 return "/Content/img/fifa.png";
             else if( pstrSigla == "AM-SUL" )
                 return "/Content/img/conmebol.png";
+            else if( pstrSigla == "AM-NOR")
+                return "/Content/img/concacaf.png";
             else
                 return string.Format( "https://flagcdn.com/w40/{0}.jpg", pstrSigla.ToString().ToLower() );
         }

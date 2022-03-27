@@ -108,6 +108,7 @@
     <Content Include="Content\css\tema.css" />
     <Content Include="Content\css\tsalx.css" />
     <Content Include="Content\img\bola.ico" />
+    <Content Include="Content\img\concacaf.png" />
     <Content Include="Content\img\conmebol.png" />
     <Content Include="Content\img\fifa.png" />
     <Content Include="Content\img\logo.png" />
