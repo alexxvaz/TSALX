@@ -57,7 +57,7 @@ namespace TSALX.DAO
                 oStrQuery.Append( "SELECT r.IDRegiao " );
                 oStrQuery.Append( "  FROM Regiao r " );
                 oStrQuery.Append( " INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao " );
-                oStrQuery.Append( " WHERE ( SiglaRegiao IS NOT NULL AND SiglaRegiao NOT IN ('EU', 'AM-SUL') ) " );
+                oStrQuery.Append( " WHERE ( SiglaRegiao IS NOT NULL AND SiglaRegiao NOT IN ('EU', 'AM-SUL', 'AM-NOR') ) " );
                 oStrQuery.AppendFormat(" AND IDCampeonato = {0} ", _intCampeonato );
 
                 short shtRegiaoID = Convert.ToInt16( _oBD.executarScalar( oStrQuery.ToString() ) );
