@@ -5,12 +5,57 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Collections;
+using System.Data;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+
+using Alxware.BD;
+using Alxware.Erro;
 
 namespace ImportarTSALX
 {
     class Program
     {
-        static void Main( string[] args )
+        static void Main( string[] args ) 
+        { 
+            try
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine( new String( '-', 80 ) );
+                Console.WriteLine( "API do Futebol" );
+                Console.WriteLine( new String( '-', 80 ) );
+                Console.WriteLine( "\nIniciando...." );
+
+                //criarScriptSportsbetTXT();
+                //criarScriptLiga();
+                pesquisarLiga( "Ligue" );
+               
+            }
+            catch ( alxExcecao ex )
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine( $"Erro: { ex.Mensagem }" );
+            }
+            catch ( IOException ex )
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine( $"Erro: { ex.Message }" );
+            }
+            catch ( Exception ex )
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine( $"Erro: { ex.Message }" );
+            }
+            finally
+            {
+                Console.WriteLine( "Processo finalizado..." );
+                Console.ReadLine();
+
+            }
+        }
+
+        #region Criação de script para as apostas antes do sistema
+        static void criarScriptSportsbetTXT()
         {
             StreamReader oLeitura = new StreamReader( @"C:\Users\Alex\OneDrive\Projetos\Trade Sport ALX\Sportsbet.IO.txt" );
             List<Aposta> lstAposta = new List<Aposta>();
@@ -214,7 +259,6 @@ namespace ImportarTSALX
             oScriptBD.Close();
              
         }
-
         static string escreverComentario( string pstrComentario, bool pblnDestaque )
         {
             StringBuilder oScript = new StringBuilder();
@@ -231,34 +275,127 @@ namespace ImportarTSALX
 
             return oScript.ToString();
         }
+        #endregion
 
-        public class Aposta 
+        #region Criação de script para API
+        static void criarScriptLiga()
         {
-            public DateTime DataPartida { get; set; }
-            public string Campeonato { get; set; }
-            public string Equipe1 { get; set; }
-            public string Equipe2 { get; set; }
-            public string Mercado { get; set; }
-            public string TipoAposta { get; set; }
-            public decimal ODD { get; set; }
-            public decimal ValorAposta { get; set; }
-            public char Situacao { get; set; }
-            public decimal ValorRetorno { get; set; }
-            public long PartidaID { get; set; }
+            DataTableReader rd  = new BD( "tsalx" ).executarQuery( "SELECT * FROM BKP_Campeonato WHERE IDCampeonato >= 7 AND AtivoCampeonato = 0" );
+            StreamWriter oScript = new StreamWriter( @"C:\Users\alexx\OneDrive\Projetos\Trade Sport ALX\BD\script_liga.sql" );
+            List<string> lstLiga = new List<string>() { "Brasileirão - Série A" ,  "CONMEBOL Libertadores", "UEFA Champions League", "Premier League", "LaLiga", "UEFA Europa League" };
+            int intPos = 0;
+
+            while ( rd.Read() )
+            {
+                string strNome = rd[ "NomeCampeonato" ].ToString();
+                
+                if( strNome.Contains( "(2") )
+                {
+                    intPos = strNome.IndexOf( "(2" );
+                    strNome = strNome.Remove( intPos, 6 )
+                                     .Trim();
+                }
+
+                if ( strNome.Contains( "202" ) )
+                {
+                    intPos = strNome.IndexOf( "202" );
+                    strNome = strNome.Remove( intPos, 4 )
+                                     .Trim();
+                }
+
+                if ( strNome.Contains( "20/" ) )
+                {
+                    intPos = strNome.IndexOf( "20/" );
+                    strNome = strNome.Remove( intPos, 5 )
+                                     .Trim();
+                }
+
+                if ( strNome.Contains( "21/" ) )
+                {
+                    intPos = strNome.IndexOf( "21/" );
+                    strNome = strNome.Remove( intPos, 5 )
+                                     .Trim();
+                }
+
+
+                if ( !lstLiga.Contains( strNome ) )
+                {
+                    StringBuilder oStrInsert = new StringBuilder();
+
+                    oStrInsert.Append( "INSERT INTO Liga VALUES ( " );
+                    oStrInsert.AppendFormat( "{0}, {1}, ", rd[ "IDCampeonato" ], rd[ "IDRegiao" ] );
+                    oStrInsert.AppendFormat( "'{0}', true, {1}", strNome, rd[ "SelecaoCampeonato" ] );
+                    oStrInsert.Append( ", NULL );" );
+
+                    oScript.WriteLine( oStrInsert.ToString() );
+
+                    lstLiga.Add( strNome );
+                }
+            }
+            
+            rd.Close();
+
+            oScript.Flush();
+            oScript.Close();
 
         }
+        #endregion
 
-        public class CompararPartida : IEqualityComparer<Aposta>
+        #region API do Futebol
+        public static void pesquisarLiga( string pstrNomeLiga )
         {
-            public bool Equals( Aposta x, Aposta y )
+
+            HttpRequestMessage _oRequest = new HttpRequestMessage();
+            string strKey = System.Configuration.ConfigurationManager.AppSettings[ "ChaveAPI" ];
+
+            _oRequest = new HttpRequestMessage();
+            _oRequest.Method = HttpMethod.Get;
+            _oRequest.Headers.Add( "Accept", "*/*" );
+            _oRequest.Headers.Add( "User-Agent", "Thunder Client (https://www.thunderclient.com)" );
+            _oRequest.Headers.Add( "x-rapidapi-host", "v3.football.api-sports.io" );
+            _oRequest.Headers.Add( "x-rapidapi-key", strKey );
+            _oRequest.RequestUri = new Uri( $"https://v3.football.api-sports.io/leagues?search={pstrNomeLiga}" );
+            
+            HttpClient oBrowse = new HttpClient();
+
+            HttpResponseMessage oResposta = oBrowse.SendAsync( _oRequest ).Result;
+
+            if ( oResposta.IsSuccessStatusCode )
             {
-                return x.PartidaID == y.PartidaID;
+                string strDados = oResposta.Content
+                                           .ReadAsStringAsync()
+                                           .Result;
+
+                //StreamReader oLer = new StreamReader( @"C:\Temp\mls.json" );
+                //string strDados = string.Empty;
+
+                //if ( oLer.Peek() > 0 )
+                //    strDados = oLer.ReadToEnd();
+
+                //oLer.Close();
+
+                IEnumerable<JToken> oLiga = JObject.Parse( strDados )
+                                                   .SelectToken( "response" );
+
+                List<Liga> lstLiga = new List<Liga>();
+
+                foreach( JToken itm in oLiga )
+                {
+                    JToken tokenLiga = itm.SelectToken( "league" );
+                    JToken tokenPais = itm.SelectToken( "country" );
+
+                    lstLiga.Add( new Liga()
+                    {
+                        IDLiga = tokenLiga.Value<int>( "id" ),
+                        Nome = tokenLiga.Value<string>( "name" ),
+                        NomePais = tokenPais.Value<string>("name")
+                    } ); 
+                }
+
+            lstLiga.ForEach( l => Console.WriteLine( $"ID: {l.IDLiga}\tNome: {l.Nome}\tPais: {l.NomePais}") );
             }
 
-            public int GetHashCode( Aposta obj )
-            {
-                return Convert.ToInt32( obj.PartidaID );
-            }
         }
+        #endregion
     }
 }
