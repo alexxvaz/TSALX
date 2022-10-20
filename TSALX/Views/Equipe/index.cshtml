@@ -31,11 +31,13 @@
         <table id="TimeTabela" class="table bg-white">
             <thead class="bg-primary text-white">
                 <tr>
+                    <th>&nbsp;</th> <!-- Escudo-->
                     <th class="w-75">Nome</th>
-                    <th>&nbsp;</th>
-                    <th>Região</th>
-                    <th>&nbsp;</th>
-                    <th>&nbsp;</th>
+                    <th class="text-center">Seleção</th>
+                    <th>&nbsp;</th> <!-- Bandeira -->
+                    <th class="w-25">Região</th>
+                    <th>&nbsp;</th> <!-- Editar -->
+                    <th>&nbsp;</th> <!-- Excluir -->
                 </tr>
             </thead>
             <tbody>
@@ -43,21 +45,16 @@
                 @foreach( var item in Model )
                 {
                 <tr>
-                    <td class="w-75">
-
+                    <td><img src="@item.Escudo" class="logo" /></td>
+                    <td class="w-75">@item.Nome</td>
+                    <td class="text-center text-info">
                         @if ( item.Selecao )
                         {
-                            <i class="fa fa-certificate" aria-hidden="true"></i>
-                            @item.Nome
-                            <em>(seleção nacional)</em>
-                        }
-                        else
-                        {
-                            @item.Nome
+                            <i class="fa fa-check-circle-o fa-lg" aria-hidden="true"></i>
                         }
                     </td>
                     <td class="text-center"><img src="@item.Bandeira" title="@item.NomeRegiao" class="bandeira" alt="tsalx - Equipe" /></td>
-                    <td>@item.NomeRegiao</td>
+                    <td class="w-25">@item.NomeRegiao</td>
                     <td class="text-center"><a href="@Url.Action( "editar", "Equipe", new { id = item.IDEquipe } )" class="text-secondary"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
                     <td class="text-center"><a href="@Url.Action( "excluir", "Equipe", new { id = item.IDEquipe } )" onclick="return confirm('Deseja excluir o item @item.Nome?');" class="text-danger"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a></td>
                 </tr>

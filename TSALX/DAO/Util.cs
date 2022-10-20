@@ -60,5 +60,12 @@ namespace TSALX.DAO
             else
                 return string.Format( "https://flagcdn.com/w40/{0}.jpg", pstrSigla.ToString().ToLower() );
         }
+        public static string informarEscudoEquipe( int? pintAPIID )
+        {
+            if ( pintAPIID.HasValue )
+                return  $"https://media.api-sports.io/football/teams/{pintAPIID.Value}.png"; 
+            else
+                return string.Empty;
+        }
     }
 }

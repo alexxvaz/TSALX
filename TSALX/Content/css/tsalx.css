@@ -91,3 +91,7 @@ body{
     max-width: 32px;
     border: 1px solid #cccccc;
 }
+.logo {
+    max-width: 24px;
+    max-height: 24px;
+}

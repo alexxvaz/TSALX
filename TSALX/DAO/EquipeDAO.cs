@@ -26,7 +26,8 @@ namespace TSALX.DAO
                 StringBuilder oStrSQL = new StringBuilder();
 
                 oStrSQL.Append( " SELECT e.IDEquipe, NomeEquipe, NomeRegiao, SiglaRegiao, " );
-                oStrSQL.Append( " (SELECT IDEquipe FROM Regiao r WHERE IDEquipe = e.IDEquipe) AS Selecao " );
+                oStrSQL.Append( " (SELECT IDEquipe FROM Regiao r WHERE IDEquipe = e.IDEquipe) AS Selecao, " );
+                oStrSQL.Append( " e.IDAPI_Equipe " );
                 oStrSQL.Append( " FROM Regiao r " );
                 oStrSQL.Append( " INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao " );
                 oStrSQL.Append( " ORDER BY NomeRegiao, NomeEquipe" );
@@ -37,12 +38,13 @@ namespace TSALX.DAO
                 {
                     lst.Add( new Models.EquipeLista()
                     {
-                        IDEquipe = Convert.ToInt32( rd["IDEquipe"] ),
-                        Nome = rd["NomeEquipe"].ToString(),
-                        NomeRegiao = rd["NomeRegiao"].ToString(),
-                        Bandeira = Util.informarBandeira( rd["SiglaRegiao"].ToString() ),
-                        Selecao = !rd.IsDBNull( 4 )
-                    } );
+                        IDEquipe = Convert.ToInt32( rd[ "IDEquipe" ] ),
+                        Nome = rd[ "NomeEquipe" ].ToString(),
+                        NomeRegiao = rd[ "NomeRegiao" ].ToString(),
+                        Bandeira = Util.informarBandeira( rd[ "SiglaRegiao" ].ToString() ),
+                        Selecao = !rd.IsDBNull( 4 ),
+                        Escudo = Util.informarEscudoEquipe(rd.IsDBNull(5)? null : (int?) rd[ "IDAPI_Equipe" ] )
+                    } ); 
                 }
 
             }

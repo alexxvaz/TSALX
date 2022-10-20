@@ -17,6 +17,8 @@ namespace TSALX.Models
         public string Nome { get; set; }
 
         public bool Selecao { get; set; }
+        public int IDAPI { get; set; }
+
     }
 
     public class EquipeLista
@@ -25,6 +27,7 @@ namespace TSALX.Models
         public string Nome { get; set; }
         public string NomeRegiao { get; set; }
         public string Bandeira { get; set; }
+        public string Escudo { get; set; }
         public bool Selecao { get; set; }
     }
 }
