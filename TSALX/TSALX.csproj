@@ -106,6 +106,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\css\select2-bootstrap.min.css" />
     <Content Include="Content\css\tema.css" />
     <Content Include="Content\css\tsalx.css" />
     <Content Include="Content\img\bola.ico" />
@@ -114,11 +115,13 @@
     <Content Include="Content\img\fifa.png" />
     <Content Include="Content\img\logo.png" />
     <None Include="Content\script\jquery.validate-vsdoc.js" />
+    <Content Include="Content\script\js\equipe.js" />
     <Content Include="Content\script\jquery.validate.js" />
     <Content Include="Content\script\jquery.validate.min.js" />
     <Content Include="Content\script\jquery.validate.unobtrusive.js" />
     <Content Include="Content\script\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Content\script\tsalx.js" />
+    <Content Include="Content\script\js\regiao.js" />
+    <Content Include="Content\script\js\tsalx.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -136,7 +139,8 @@
     <Compile Include="Controllers\PartidaController.cs" />
     <Compile Include="Controllers\RegiaoController.cs" />
     <Compile Include="Controllers\TemporadaController.cs" />
-    <Compile Include="DAO\APIFutebol.cs" />
+    <Compile Include="Models\Regiao\Pagina.cs" />
+    <Compile Include="Servico\APIFutebol.cs" />
     <Compile Include="DAO\CampeonatoDAO.cs" />
     <Compile Include="DAO\EntradaDAO.cs" />
     <Compile Include="DAO\LancamentoDAO.cs" />
@@ -145,6 +149,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\API\Bandeira.cs" />
     <Compile Include="Models\API\APIBase.cs" />
     <Compile Include="Models\API\Equipe.cs" />
     <Compile Include="Models\API\Liga.cs" />
@@ -155,11 +160,11 @@
     <Compile Include="Models\MovFinanceira.cs" />
     <Compile Include="Models\Mercado.cs" />
     <Compile Include="Models\Partida.cs" />
-    <Compile Include="Models\Regiao.cs" />
+    <Compile Include="Models\Regiao\ItemRegiao.cs" />
     <Compile Include="DAO\EquipeDAO.cs" />
     <Compile Include="DAO\MercadoDAO.cs" />
     <Compile Include="DAO\RegiaoDAO.cs" />
-    <Compile Include="DAO\Util.cs" />
+    <Compile Include="Servico\Util.cs" />
     <Compile Include="Models\Temporada.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -192,6 +197,7 @@
     <Content Include="Views\Home\acesso.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Views\MovFinanceira\extratodia.cshtml" />
+    <Content Include="Views\Equipe\pesquisa.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

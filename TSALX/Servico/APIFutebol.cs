@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 using TSALX.Models.API;
 
-namespace TSALX.DAO
+namespace TSALX.Servico
 {
 
     public class APIFutebol
@@ -20,9 +20,44 @@ namespace TSALX.DAO
             _oRequest = new HttpRequestMessage();
             _oRequest.Method = HttpMethod.Get;
             _oRequest.Headers.Add( "Accept", "*/*" );
-            _oRequest.Headers.Add( "User-Agent", "Thunder Client (https://www.thunderclient.com)" );
+            _oRequest.Headers.Add( "User-Agent", "TSALX" );
             _oRequest.Headers.Add( "x-rapidapi-host", "v3.football.api-sports.io" );
             _oRequest.Headers.Add( "x-rapidapi-key", strKey );
+        }
+        
+        public List<Bandeira> listarBandeira()
+        {
+            List<Bandeira> lstRet = null;
+
+            _oRequest.Headers.Remove( "x-rapidapi-host" );
+            _oRequest.Headers.Remove( "x-rapidapi-key" );
+            _oRequest.RequestUri = new Uri( "https://flagcdn.com/en/codes.json" );
+            
+            HttpClient oBrowse = new HttpClient();
+
+            HttpResponseMessage oResposta = oBrowse.SendAsync( _oRequest ).Result;
+
+            if ( oResposta.IsSuccessStatusCode )
+            {
+                string strDados = oResposta.Content
+                                          .ReadAsStringAsync()
+                                          .Result;
+                
+                lstRet = new List<Bandeira>();
+                JObject oSigla = JObject.Parse( strDados );
+
+                foreach( var itm in oSigla )
+                {
+                    lstRet.Add( new Bandeira() 
+                    { 
+                        Sigla = itm.Key.ToUpper(),
+                        NomePais = itm.ToString()
+                    } );
+                }
+
+            }
+
+            return lstRet;
         }
 
         #region Liga

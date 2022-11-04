@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
+using TSALX.Models.Regiao;
 namespace TSALX.Models
 {
     public class Campeonato
     {
         public int IDCampeonato { get; set; }
-        public List<Regiao> ListaRegiao { get; set; }
+        public List<ItemRegiao> ListaRegiao { get; set; }
         public List<EquipeLista> Coluna1Equipe { get; set; }
         public List<EquipeLista> Coluna2Equipe { get; set; }
         public List<EquipeLista> Coluna3Equipe { get; set; }

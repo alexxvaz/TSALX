@@ -1,6 +1,8 @@
 ﻿using Alxware.Erro;
 using System.Web.Mvc;
 using TSALX.DAO;
+using TSALX.Models.Regiao;
+using TSALX.Servico;
 
 namespace TSALX.Controllers
 {
@@ -19,11 +21,17 @@ namespace TSALX.Controllers
         public ActionResult novo()
         {
             ModelState.Clear();
-            return View( new Models.Regiao() );
+
+            return View( new Pagina() 
+            { 
+                regiao = new ItemRegiao(),
+                ListaCountry = new APIFutebol().listarBandeira()
+            
+            } );
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult novo( Models.Regiao pobj )
+        public ActionResult novo( ItemRegiao pobj )
         {
             try
             {
@@ -51,7 +59,7 @@ namespace TSALX.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult editar( Models.Regiao pobj )
+        public ActionResult editar( ItemRegiao pobj )
         {
             try
             {

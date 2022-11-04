@@ -12,4 +12,9 @@ namespace ImportarTSALX
         public string Nome { get; set; }
         public string NomePais { get; set; }
     }
+    public class Bandeira
+    {
+        public string Sigla { get; set; }
+        public string NomePais { get; set; }
+    }
 }

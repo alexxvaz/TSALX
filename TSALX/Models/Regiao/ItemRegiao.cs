@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TSALX.Models
+namespace TSALX.Models.Regiao
 {
-    public class Regiao
+    public class ItemRegiao
     {
         public short IDRegiao { get; set; }
         [Required( ErrorMessage ="Informe o nome da região")]
@@ -12,5 +12,7 @@ namespace TSALX.Models
         public string Bandeira { get; set; }
         [Display(Name ="Tem seleção nacional")]
         public bool TemSelecao { get; set; }
+        [Display(Name = "Nome em Inglês")]
+        public string Country { get; set; }
     }
 }

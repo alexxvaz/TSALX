@@ -5,6 +5,7 @@ using System.Text;
 
 using Alxware.BD;
 using Alxware.Erro;
+using TSALX.Servico;
 
 namespace TSALX.DAO
 {
@@ -71,7 +72,7 @@ namespace TSALX.DAO
                     if( intProximoID > 0 )
                     {
                         oStrDML.Append( "INSERT INTO Equipe " );
-                        oStrDML.AppendFormat( "VALUES ( {0}, {1}, '{2}' )", intProximoID, pobjEquipe.IDRegiao, pobjEquipe.Nome.Replace( "'", "''" ) );
+                        oStrDML.AppendFormat( "VALUES ( {0}, {1}, '{2}', {3} )", intProximoID, pobjEquipe.IDRegiao, pobjEquipe.Nome.Replace( "'", "''" ), pobjEquipe.IDAPI );
 
                         intIDRet = intProximoID;
                     }
@@ -83,6 +84,7 @@ namespace TSALX.DAO
                     oStrDML.Append( "UPDATE Equipe SET " );
                     oStrDML.AppendFormat( "NomeEquipe = '{0}' ", pobjEquipe.Nome.Replace( "'", "''" ) );
                     oStrDML.AppendFormat( ", IDRegiao = {0}", pobjEquipe.IDRegiao );
+                    oStrDML.AppendFormat( ", IDAPI_Equipe = {0}", pobjEquipe.IDAPI  );
                     oStrDML.AppendFormat( " WHERE IDEquipe = {0}", pobjEquipe.IDEquipe );
 
                     intIDRet = pobjEquipe.IDEquipe;
@@ -141,7 +143,7 @@ namespace TSALX.DAO
 
             try
             {
-                DataTableReader rd = _oBD.executarQuery( "SELECT e.IDEquipe, e.IDRegiao, e.NomeEquipe, if( r.IDEquipe IS NOT NULL, true, false ) AS Selecao " +
+                DataTableReader rd = _oBD.executarQuery( "SELECT e.IDEquipe, e.IDRegiao, e.NomeEquipe, if( r.IDEquipe IS NOT NULL, true, false ) AS Selecao, IDAPI_Equipe " +
                                                            "FROM Equipe e " +
                                                            "LEFT JOIN Regiao r ON r.IDEquipe = e.IDEquipe " + 
                                                           "WHERE e.IDEquipe = {0}", pintID );
@@ -153,7 +155,8 @@ namespace TSALX.DAO
                         IDEquipe = rd.GetInt32( 0 ),
                         IDRegiao = rd.GetInt16( 1 ),
                         Nome = rd[2].ToString(),
-                        Selecao = Convert.ToBoolean( rd[ "Selecao" ] )
+                        Selecao = Convert.ToBoolean( rd[ "Selecao" ] ),
+                        IDAPI = rd.IsDBNull(4)? 0 : rd.GetInt32(4)
                     };
                 }
             }

@@ -4,7 +4,7 @@ using System.Data;
 using Alxware.BD;
 using Alxware.Erro;
 
-namespace TSALX.DAO
+namespace TSALX.Servico
 {
     public class Util
     {
@@ -63,7 +63,12 @@ namespace TSALX.DAO
         public static string informarEscudoEquipe( int? pintAPIID )
         {
             if ( pintAPIID.HasValue )
-                return  $"https://media.api-sports.io/football/teams/{pintAPIID.Value}.png"; 
+            {
+                if( pintAPIID.Value > 0 )
+                    return $"https://media.api-sports.io/football/teams/{pintAPIID.Value}.png";
+                else
+                    return string.Empty;
+            }
             else
                 return string.Empty;
         }

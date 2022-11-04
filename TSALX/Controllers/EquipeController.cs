@@ -1,6 +1,9 @@
 ﻿using Alxware.Erro;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using TSALX.DAO;
+using System.Linq;
+using TSALX.Models.Regiao;
 
 namespace TSALX.Controllers
 {
@@ -20,10 +23,10 @@ namespace TSALX.Controllers
         {
             ModelState.Clear();
 
-            Models.Equipe objEquipe = new Models.Equipe();
+            Models.EquipePagina objEquipe = new Models.EquipePagina();
             objEquipe.ListaRegiao = new RegiaoDAO().listar();
 
-            return View( objEquipe );
+            return View( objEquipe.equipe );
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -44,7 +47,7 @@ namespace TSALX.Controllers
             catch( alxExcecao ex )
             {
                 ViewBag.ErroMensagem = ex.Mensagem;
-                pobj.ListaRegiao = new RegiaoDAO().listar();
+                //pobj.ListaRegiao = new RegiaoDAO().listar();
                 return View( pobj );
             }
         }
@@ -54,35 +57,55 @@ namespace TSALX.Controllers
         {
             ModelState.Clear();
 
-            Models.Equipe objEquipe = new EquipeDAO().obter( id );
-            objEquipe.ListaRegiao = new RegiaoDAO().listar();
+            List<ItemRegiao> lstRegiao = new RegiaoDAO().listar();
+                                                          
+            Models.EquipePesquisa oPesquisa = new Models.EquipePesquisa()
+            {
+                ListaLiga = new List<Models.Campeonato>(),
+                ListaTemporadas = new List<Models.Temporada>(),
+                ListaRegiao = lstRegiao.Where( r => !string.IsNullOrWhiteSpace( r.Country.Trim() ) )
+                                                           .ToList()
+            };
 
-            return View( objEquipe );
+            return View( new Models.EquipePagina() 
+            {
+                equipe = new EquipeDAO().obter( id ),
+                ListaRegiao = lstRegiao,
+                Pesquisa = oPesquisa
+            } );
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult editar( Models.Equipe pobj )
+        public ActionResult editar( Models.EquipePagina pobj )
         {
             try
             {
                 if( ModelState.IsValid )
                 {
-                    EquipeDAO obj = new EquipeDAO();
-                    obj.salvar( pobj );
-
+                    new EquipeDAO().salvar( pobj.equipe );
                     return RedirectToAction( "index" );
                 }
                 else
                     return View();
-
             }
             catch( alxExcecao ex )
             {
                 ViewBag.ErroMensagem = ex.Mensagem;
-                pobj.ListaRegiao = new RegiaoDAO().listar();
-                return View( pobj );
-            }
+                List<ItemRegiao> lstRegiao = new RegiaoDAO().listar();
 
+                Models.EquipePesquisa oPesquisa = new Models.EquipePesquisa()
+                {
+                    ListaRegiao = lstRegiao,
+                    ListaLiga = new List<Models.Campeonato>(),
+                    ListaTemporadas = new List<Models.Temporada>()
+                };
+                return View( new Models.EquipePagina()
+                {
+                    equipe = pobj.equipe,
+                    ListaRegiao = lstRegiao,
+                    Pesquisa = oPesquisa
+                } );
+            }
         }
 
         public ActionResult excluir( int id )

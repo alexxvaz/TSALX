@@ -95,3 +95,11 @@ body{
     max-width: 24px;
     max-height: 24px;
 }
+
+.modal h5 {
+    font-family: 'Nunito';
+    font-size: 1.2em;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 0px;
+}

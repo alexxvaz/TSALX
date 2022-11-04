@@ -5,6 +5,8 @@ using System.Text;
 using Alxware.BD;
 using Alxware.Erro;
 
+using TSALX.Servico;
+
 namespace TSALX.DAO
 {
     public class LancamentoDAO

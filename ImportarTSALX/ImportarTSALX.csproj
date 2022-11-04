@@ -56,7 +56,7 @@
   <ItemGroup>
     <Compile Include="Aposta.cs" />
     <Compile Include="CompararPartida.cs" />
-    <Compile Include="Liga.cs" />
+    <Compile Include="Classes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

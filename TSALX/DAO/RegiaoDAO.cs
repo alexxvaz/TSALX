@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
+using TSALX.Servico;
+using TSALX.Models.Regiao;
+
 using Alxware.BD;
 using Alxware.Erro;
 
@@ -17,22 +20,23 @@ namespace TSALX.DAO
             _oBD = new BD( Util.ConexaoBD );
         }
         
-        public List<Models.Regiao> listar()
+        public List<ItemRegiao> listar()
         {
-            List<Models.Regiao> lst = new List<Models.Regiao>();
+            List<ItemRegiao> lst = new List<ItemRegiao>();
 
             try
             {
-                DataTableReader rd = _oBD.executarQuery( "SELECT IDRegiao, NomeRegiao, SiglaRegiao FROM Regiao ORDER BY NomeRegiao" );
+                DataTableReader rd = _oBD.executarQuery( "SELECT IDRegiao, NomeRegiao, SiglaRegiao, Country FROM Regiao ORDER BY NomeRegiao" );
 
                 while( rd.Read() )
                 {
-                    lst.Add( new Models.Regiao()
+                    lst.Add( new ItemRegiao()
                     {
                         IDRegiao = Convert.ToInt16( rd[ "IDRegiao" ] ),
                         Nome = rd[ "NomeRegiao" ].ToString(),
-                        Sigla = rd.IsDBNull( 2 ) ? string.Empty: rd[ 2 ].ToString(), 
-                        Bandeira = Util.informarBandeira( rd[ 2 ].ToString() )
+                        Sigla = rd[ "SiglaRegiao" ].ToString(), 
+                        Bandeira = Util.informarBandeira( rd[ 2 ].ToString() ),
+                        Country = rd[ "Country" ].ToString()
                     } );
                 }
 
@@ -46,7 +50,7 @@ namespace TSALX.DAO
             return lst;
         }
 
-        public void salvar( Models.Regiao pobjRegiao )
+        public void salvar( ItemRegiao pobjRegiao )
         {
             short shtRegiaoID = -1;
             try
@@ -60,11 +64,21 @@ namespace TSALX.DAO
                     if( intProximoID > 0 )
                     {
                         oStrDML.Append( "INSERT INTO Regiao " );
+                        oStrDML.AppendFormat( "VALUES ( {0}, NULL, '{1}' ", intProximoID, pobjRegiao.Nome.Replace( "'", "''" ) );
 
-                        if( ! string.IsNullOrEmpty( pobjRegiao.Sigla) )
-                            oStrDML.AppendFormat( "VALUES ( {0}, NULL, '{1}', '{2}' )", intProximoID, pobjRegiao.Nome.Replace( "'", "''" ), pobjRegiao.Sigla.ToUpper() );
+                        // SiglaRegiao
+                        if ( ! string.IsNullOrEmpty( pobjRegiao.Sigla) )
+                            oStrDML.AppendFormat( ", '{0}' ", pobjRegiao.Sigla.ToUpper() );
                         else
-                            oStrDML.AppendFormat( "VALUES ( {0}, NULL, '{1}', NULL )", intProximoID, pobjRegiao.Nome.Replace( "'", "''" ) );
+                            oStrDML.Append( ", NULL " );
+
+                        // Country
+                        if ( !string.IsNullOrEmpty( pobjRegiao.Country ) )
+                            oStrDML.AppendFormat( ", '{0}' ", pobjRegiao.Country );
+                        else
+                            oStrDML.Append( ", NULL " );
+
+                        oStrDML.Append( " )" );
 
                         shtRegiaoID = (short) intProximoID;
                     }
@@ -80,6 +94,11 @@ namespace TSALX.DAO
                         oStrDML.AppendFormat( ", SiglaRegiao = '{0}' ", pobjRegiao.Sigla.ToUpper() );
                     else
                         oStrDML.Append( ", SiglaRegiao = NULL" );
+
+                    if ( !string.IsNullOrEmpty( pobjRegiao.Country ) )
+                        oStrDML.AppendFormat( ", Country = '{0}' ", pobjRegiao.Country );
+                    else
+                        oStrDML.Append( ", Country = 'NULL " );
 
                     oStrDML.AppendFormat( " WHERE IDRegiao = {0}", pobjRegiao.IDRegiao );
 
@@ -148,23 +167,24 @@ namespace TSALX.DAO
             }
         }
 
-        public Models.Regiao obter( int pintID )
+        public ItemRegiao obter( int pintID )
         {
-            Models.Regiao oRet = null;
+            ItemRegiao oRet = null;
 
             try
             {
-                DataTableReader rd = _oBD.executarQuery( "SELECT IDRegiao, NomeRegiao, SiglaRegiao, IDEquipe FROM Regiao WHERE IDRegiao = {0}", pintID );
+                DataTableReader rd = _oBD.executarQuery( "SELECT IDRegiao, NomeRegiao, SiglaRegiao, IDEquipe, Country FROM Regiao WHERE IDRegiao = {0}", pintID );
 
                 if( rd.Read() )
                 {
-                    oRet = new Models.Regiao()
+                    oRet = new ItemRegiao()
                     {
                         IDRegiao = rd.GetInt16( 0 ),
                         Nome = rd[ 1 ].ToString(),
                         Sigla = rd.IsDBNull( 2 ) ? string.Empty : rd[ 2 ].ToString(),
                         Bandeira = Util.informarBandeira( rd[ 2 ].ToString() ),
-                        TemSelecao = !rd.IsDBNull( 3 )
+                        TemSelecao = !rd.IsDBNull( 3 ),
+                        Country = rd[ 4 ].ToString()
                     };
                 }
             }

@@ -8,6 +8,7 @@ using System.Collections;
 using System.Data;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 using Alxware.BD;
 using Alxware.Erro;
@@ -28,8 +29,10 @@ namespace ImportarTSALX
 
                 //criarScriptSportsbetTXT();
                 //criarScriptLiga();
-                pesquisarLiga( "Ligue" );
-               
+                //pesquisarLiga( "Ligue" );
+                listarBandeiras();
+
+
             }
             catch ( alxExcecao ex )
             {
@@ -395,6 +398,40 @@ namespace ImportarTSALX
             lstLiga.ForEach( l => Console.WriteLine( $"ID: {l.IDLiga}\tNome: {l.Nome}\tPais: {l.NomePais}") );
             }
 
+        }
+        public static void listarBandeiras()
+        {
+            HttpRequestMessage _oRequest = new HttpRequestMessage();
+            
+            _oRequest = new HttpRequestMessage();
+            _oRequest.Method = HttpMethod.Get;
+            _oRequest.Headers.Add( "Accept", "*/*" );
+            _oRequest.RequestUri = new Uri( "https://flagcdn.com/en/codes.json" );
+
+            HttpClient oBrowse = new HttpClient();
+
+            HttpResponseMessage oResposta = oBrowse.SendAsync( _oRequest ).Result;
+
+            if ( oResposta.IsSuccessStatusCode )
+            {
+                string strDados = oResposta.Content
+                                          .ReadAsStringAsync()
+                                          .Result;
+
+                List<Bandeira> lstBand = new List<Bandeira>();
+                JObject oSigla = JObject.Parse( strDados );
+                
+                foreach (var itm in oSigla )
+                {
+                    lstBand.Add( new Bandeira()
+                    {
+                        Sigla = itm.Key,
+                        NomePais = itm.Value.ToString()
+                    } );
+                }
+
+                lstBand.ForEach( p => Console.WriteLine( $"{p.Sigla} => {p.NomePais}" ) );
+            }
         }
         #endregion
     }
