@@ -4,7 +4,7 @@ using System.Data;
 using System.Text;
 
 using TSALX.Servico;
-using TSALX.Models.Regiao;
+using TSALX.Models;
 
 using Alxware.BD;
 using Alxware.Erro;
@@ -20,9 +20,9 @@ namespace TSALX.DAO
             _oBD = new BD( Util.ConexaoBD );
         }
         
-        public List<ItemRegiao> listar()
+        public List<Regiao> listar()
         {
-            List<ItemRegiao> lst = new List<ItemRegiao>();
+            List<Regiao> lst = new List<Regiao>();
 
             try
             {
@@ -30,7 +30,7 @@ namespace TSALX.DAO
 
                 while( rd.Read() )
                 {
-                    lst.Add( new ItemRegiao()
+                    lst.Add( new Regiao()
                     {
                         IDRegiao = Convert.ToInt16( rd[ "IDRegiao" ] ),
                         Nome = rd[ "NomeRegiao" ].ToString(),
@@ -50,7 +50,7 @@ namespace TSALX.DAO
             return lst;
         }
 
-        public void salvar( ItemRegiao pobjRegiao )
+        public void salvar( Regiao pobjRegiao )
         {
             short shtRegiaoID = -1;
             try
@@ -76,7 +76,7 @@ namespace TSALX.DAO
                         if ( !string.IsNullOrEmpty( pobjRegiao.Country ) )
                             oStrDML.AppendFormat( ", '{0}' ", pobjRegiao.Country );
                         else
-                            oStrDML.Append( ", NULL " );
+                            oStrDML.Append( ", 'World' " );
 
                         oStrDML.Append( " )" );
 
@@ -98,7 +98,7 @@ namespace TSALX.DAO
                     if ( !string.IsNullOrEmpty( pobjRegiao.Country ) )
                         oStrDML.AppendFormat( ", Country = '{0}' ", pobjRegiao.Country );
                     else
-                        oStrDML.Append( ", Country = 'NULL " );
+                        oStrDML.Append( ", Country = 'World' " );
 
                     oStrDML.AppendFormat( " WHERE IDRegiao = {0}", pobjRegiao.IDRegiao );
 
@@ -140,10 +140,11 @@ namespace TSALX.DAO
                     throw new alxExcecao( "O nome da região '{0}' já foi cadastrada", pobjRegiao.Nome );
                 else
                 {
-                    if( ex.Tipo != ErroTipo.Processo )
-                        throw ex;
-
-                    new TratamentoErro( ex ).tratarErro();
+                    if ( ex.Tipo != ErroTipo.Processo )
+                        new TratamentoErro( ex ).tratarErro();
+                        
+                    throw ex;
+                    
                 }
 
             }
@@ -167,9 +168,9 @@ namespace TSALX.DAO
             }
         }
 
-        public ItemRegiao obter( int pintID )
+        public Regiao obter( int pintID )
         {
-            ItemRegiao oRet = null;
+            Regiao oRet = null;
 
             try
             {
@@ -177,14 +178,15 @@ namespace TSALX.DAO
 
                 if( rd.Read() )
                 {
-                    oRet = new ItemRegiao()
+                    oRet = new Regiao()
                     {
                         IDRegiao = rd.GetInt16( 0 ),
                         Nome = rd[ 1 ].ToString(),
                         Sigla = rd.IsDBNull( 2 ) ? string.Empty : rd[ 2 ].ToString(),
                         Bandeira = Util.informarBandeira( rd[ 2 ].ToString() ),
                         TemSelecao = !rd.IsDBNull( 3 ),
-                        Country = rd[ 4 ].ToString()
+                        Country = rd[ 4 ].ToString(),
+                        CodCountry = rd.IsDBNull( 2 ) ? string.Empty : rd[ 2 ].ToString()
                     };
                 }
             }

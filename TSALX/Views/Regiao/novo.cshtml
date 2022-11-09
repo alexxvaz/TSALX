@@ -1,10 +1,10 @@
-﻿@model TSALX.Models.Regiao.Pagina
+﻿@model TSALX.ViewModel.RegiaoVM
 
 @{
-    ViewBag.Title = "Nova Região";
+    ViewBag.Title = Model.Titulo;
 }
 
-<h1>Nova Região</h1>
+<h2>@Model.Titulo</h2>
 
 <div class="row">
     <div class="col-md-12 text-right">
@@ -14,8 +14,7 @@
     </div>
 </div>
 
-
-@using( Html.BeginForm() )
+@using ( Html.BeginForm() )
 {
     @Html.AntiForgeryToken()
 
@@ -32,17 +31,22 @@
     <div class="row mt-1">
         <div class="col-md-5">
             <div class="form-group">
+                @Html.LabelFor( m => m.regiao.CodCountry )
+                @Html.DropDownListFor( m => m.regiao.CodCountry, new SelectList( Model.ListaCountry, "Sigla", "NomePais" ), "(selecione)", new { @class = "form-control", id = "listaCountry" } )
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
                 @Html.LabelFor( m => m.regiao.Sigla )
-                @Html.DropDownListFor( m => m.regiao.Country, new SelectList( Model.ListaCountry, "Sigla", "NomePais" ), "(selecione)", new { @class = "form-control", id = "listaCountry" } )
+                @Html.TextBoxFor( m => m.regiao.Sigla, new { @class = "form-control", autocomplete = "off" } )
                 @Html.ValidationMessageFor( m => m.regiao.Sigla )
             </div>
         </div>
-        <div class="col-md-7" style="padding-top: 3.25%">
-            <div class="custom-switch custom-control-inline">
 
+        <div class="col-md-4" style="padding-top: 3.25%">
+            <div class="custom-switch custom-control-inline">
                 @Html.CheckBoxFor( m => m.regiao.TemSelecao, new { @class = "custom-control-input" } )
                 @Html.LabelFor( m => m.regiao.TemSelecao, new { @class = "custom-control-label" } )
-
             </div>
         </div>
     </div>
@@ -54,20 +58,12 @@
     </div>
 }
 
-@if( ViewBag.ErroMensagem != null )
-{
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                @ViewBag.ErroMensagem
-            </div>
-        </div>
-    </div>
-}
 @section Regiao_Novo
 {
+    <script type="text/javascript">
+        const nTipo = @Model.TipoMSG;
+        const sMsg = "@Model.TextoMSG";
+    </script>
+
     <script type="text/javascript" src="~/Content/script/js/regiao.js"></script>
 }

@@ -1,14 +1,14 @@
-﻿@model TSALX.Models.Regiao
+﻿@model TSALX.ViewModel.RegiaoVM
 
 @{
-    ViewBag.Title = "Editar Região";
+    ViewBag.Title = Model.Titulo;
 }
 
-<h2>Editar Região</h2>
+<h2>@Model.Titulo</h2>
 
 
 <div class="row">
-    <div class="col-lg-12 text-right">
+    <div class="col-md-12 text-right">
         <a href="@Url.Action("Index", "Regiao" )" class="text-secondary">
             <i class="fa fa-table" aria-hidden="true"></i> Listar Regiões
         </a>
@@ -16,35 +16,45 @@
 </div>
 
 
-@using( Html.BeginForm() )
+@using ( Html.BeginForm() )
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor( m => m.IDRegiao )
+    @Html.HiddenFor( m => m.regiao.IDRegiao )
 
     <div class="row mt-2">
-        <div class="col-lg-12">
+        <div class="col-md-12">
             <div class="form-group">
-                @Html.LabelFor( m => m.Nome )
-                @Html.TextBoxFor( m => m.Nome, new { @class = "form-control", autocomplete = "off" } )
-                @Html.ValidationMessageFor( m => m.Nome )
+                @Html.LabelFor( m => m.regiao.Nome )
+                @Html.TextBoxFor( m => m.regiao.Nome, new { @class = "form-control", autocomplete = "off" } )
+                @Html.ValidationMessageFor( m => m.regiao.Nome )
             </div>
         </div>
     </div>
 
     <div class="row mt-1">
-        <div class="col-lg-3">
+
+        <div class="col-md-5">
             <div class="form-group">
-                @Html.LabelFor( m => m.Sigla )
-                @Html.TextBoxFor( m => m.Sigla, new { @class = "form-control", autocomplete = "off" } )
-                @Html.ValidationMessageFor( m => m.Sigla )
+                @Html.LabelFor( m => m.regiao.CodCountry )
+                @Html.DropDownListFor( m => m.regiao.CodCountry, new SelectList( Model.ListaCountry, "Sigla", "NomePais" ), "(selecione)", new { @class = "form-control", id = "listaCountry" } )
+            </div>
+        </div>
+        <div class="col-md-1 text-left d-flex flex-column justify-content-center align-items-center" style="padding-top: 1rem;">
+            <img src="@Model.regiao.Bandeira" class="rounded img-thumbnail" />
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor( m => m.regiao.Sigla )
+                @Html.TextBoxFor( m => m.regiao.Sigla, new { @class = "form-control", autocomplete = "off" } )
+                @Html.ValidationMessageFor( m => m.regiao.Sigla )
             </div>
         </div>
 
-        <div class="col-lg-9" style="padding-top: 3.25%">
+        <div class="col-md-3" style="padding-top: 3.25%">
             <div class="custom-switch custom-control-inline">
 
-                @Html.CheckBoxFor( m => m.TemSelecao, new { @class = "custom-control-input" } )
-                @Html.LabelFor( m => m.TemSelecao, new { @class = "custom-control-label" } )
+                @Html.CheckBoxFor( m => m.regiao.TemSelecao, new { @class = "custom-control-input" } )
+                @Html.LabelFor( m => m.regiao.TemSelecao, new { @class = "custom-control-label" } )
 
             </div>
         </div>
@@ -52,18 +62,17 @@
     </div>
 
 
-
     <div class="row">
-        <div class="col-lg-12 text-right">
+        <div class="col-md-12 text-right">
             <button type="submit" class="btn btn-warning">Salvar</button>
         </div>
     </div>
 }
 
-@if( ViewBag.ErroMensagem != null )
+@if ( ViewBag.ErroMensagem != null )
 {
     <div class="row mt-3">
-        <div class="col-lg-12">
+        <div class="col-md-12">
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
                     <span aria-hidden="true">&times;</span>
@@ -73,4 +82,12 @@
         </div>
     </div>
 }
+@section Regiao_Editar
+{
+    <script type="text/javascript">
+        const nTipo = @Model.TipoMSG;
+        const sMsg = "@Model.TextoMSG";
+    </script>
 
+    <script type="text/javascript" src="~/Content/script/js/regiao.js"></script>
+}
