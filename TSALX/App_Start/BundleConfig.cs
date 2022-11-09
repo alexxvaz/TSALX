@@ -10,7 +10,8 @@ namespace TSALX
                         "~/Content/script/jquery.validate.js",
                         "~/Content/script/jquery.validate.unobtrusive.js",
                         "~/Content/script/js/tsalx.js",
-                        "~/Content/script/js/equipe.js" ) );
+                        "~/Content/script/js/equipe.js"
+                        ) );
 
             bundles.Add( new StyleBundle( "~/Content/css" )
                          .Include( "~/Content/css/tema.css", 

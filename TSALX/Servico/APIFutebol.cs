@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 
 using Newtonsoft.Json.Linq;
@@ -24,7 +25,8 @@ namespace TSALX.Servico
             _oRequest.Headers.Add( "x-rapidapi-host", "v3.football.api-sports.io" );
             _oRequest.Headers.Add( "x-rapidapi-key", strKey );
         }
-        
+
+        #region bandeira
         public List<Bandeira> listarBandeira()
         {
             List<Bandeira> lstRet = null;
@@ -51,7 +53,7 @@ namespace TSALX.Servico
                     lstRet.Add( new Bandeira() 
                     { 
                         Sigla = itm.Key.ToUpper(),
-                        NomePais = itm.ToString()
+                        NomePais = itm.Value.ToString()
                     } );
                 }
 
@@ -59,7 +61,13 @@ namespace TSALX.Servico
 
             return lstRet;
         }
-
+        public string obterNomeBandeira( string pstrSigla )
+        {
+            return listarBandeira().Where( b => b.Sigla == pstrSigla )
+                                   .FirstOrDefault()
+                                   .NomePais;
+        }
+        #endregion
         #region Liga
         public List<Liga> pesquisarLiga( string pstrNomeLiga ) 
         {
