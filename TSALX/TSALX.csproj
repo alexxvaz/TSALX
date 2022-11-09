@@ -139,9 +139,7 @@
     <Compile Include="Controllers\PartidaController.cs" />
     <Compile Include="Controllers\RegiaoController.cs" />
     <Compile Include="Controllers\TemporadaController.cs" />
-    <Compile Include="ViewModel\basePagina.cs" />
-    <Compile Include="ViewModel\RegiaoPG.cs" />
-    <Compile Include="ViewModel\RegiaoVM.cs" />
+    <Compile Include="Models\Regiao\Pagina.cs" />
     <Compile Include="Servico\APIFutebol.cs" />
     <Compile Include="DAO\CampeonatoDAO.cs" />
     <Compile Include="DAO\EntradaDAO.cs" />
@@ -162,7 +160,7 @@
     <Compile Include="Models\MovFinanceira.cs" />
     <Compile Include="Models\Mercado.cs" />
     <Compile Include="Models\Partida.cs" />
-    <Compile Include="Models\Regiao.cs" />
+    <Compile Include="Models\Regiao\ItemRegiao.cs" />
     <Compile Include="DAO\EquipeDAO.cs" />
     <Compile Include="DAO\MercadoDAO.cs" />
     <Compile Include="DAO\RegiaoDAO.cs" />

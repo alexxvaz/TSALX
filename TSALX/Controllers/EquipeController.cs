@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using TSALX.DAO;
 using System.Linq;
-using TSALX.Models;
+using TSALX.Models.Regiao;
 
 namespace TSALX.Controllers
 {
@@ -57,7 +57,7 @@ namespace TSALX.Controllers
         {
             ModelState.Clear();
 
-            List<Regiao> lstRegiao = new RegiaoDAO().listar();
+            List<ItemRegiao> lstRegiao = new RegiaoDAO().listar();
                                                           
             Models.EquipePesquisa oPesquisa = new Models.EquipePesquisa()
             {
@@ -91,7 +91,7 @@ namespace TSALX.Controllers
             catch( alxExcecao ex )
             {
                 ViewBag.ErroMensagem = ex.Mensagem;
-                List<Regiao> lstRegiao = new RegiaoDAO().listar();
+                List<ItemRegiao> lstRegiao = new RegiaoDAO().listar();
 
                 Models.EquipePesquisa oPesquisa = new Models.EquipePesquisa()
                 {
