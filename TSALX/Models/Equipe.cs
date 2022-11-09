@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using TSALX.Models.Regiao;
+using TSALX.Models;
 
 namespace TSALX.Models
 {
@@ -36,7 +36,7 @@ namespace TSALX.Models
     {
         public Equipe equipe { get; set; }
         public EquipePesquisa Pesquisa { get; set; }
-        public List<ItemRegiao> ListaRegiao { get; set; }
+        public List<Regiao> ListaRegiao { get; set; }
     }
 
     public class EquipePesquisa
@@ -53,7 +53,7 @@ namespace TSALX.Models
 
         // Lista
         public List<Temporada> ListaTemporadas { get; set; }
-        public List<ItemRegiao> ListaRegiao { get; set; }
+        public List<Regiao> ListaRegiao { get; set; }
         public List<Campeonato> ListaLiga { get; set; }
     }
 }

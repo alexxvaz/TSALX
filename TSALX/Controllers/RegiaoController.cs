@@ -4,7 +4,9 @@ using System.Web.Mvc;
 using Alxware.Erro;
 
 using TSALX.Models;
+using TSALX.Servico;
 using TSALX.ViewModel;
+
 
 namespace TSALX.Controllers
 {
@@ -18,14 +20,14 @@ namespace TSALX.Controllers
             string strMensagem = string.Empty;
             ErroTipo enuTipo = ErroTipo.Processo;
 
-            if( Request.QueryString[ "Mensagem" ] != null )
+            if ( Request.QueryString[ "Mensagem" ] != null )
             {
                 strMensagem = Request.QueryString[ "Mensagem" ];
 
-                switch( Request.QueryString[ "Tipo" ] )
+                switch ( Request.QueryString[ "Tipo" ] )
                 {
                     case "Processo":
-                        enuTipo =  ErroTipo.Processo;
+                        enuTipo = ErroTipo.Processo;
                         break;
                     case "Dados":
                         enuTipo = ErroTipo.Dados;
@@ -35,8 +37,8 @@ namespace TSALX.Controllers
                         break;
                 }
             }
-                
-            return View( new RegiaoPG() 
+
+            return View( new RegiaoPG()
             {
                 Titulo = "Região",
                 TextoMSG = strMensagem,
@@ -50,8 +52,8 @@ namespace TSALX.Controllers
         {
             ModelState.Clear();
 
-            return View( new RegiaoVM() 
-            { 
+            return View( new RegiaoVM()
+            {
                 Titulo = "Nova Região",
                 regiao = new Regiao(),
                 ListaCountry = _apiFutebol.listarBandeira()
@@ -77,7 +79,7 @@ namespace TSALX.Controllers
                 else
                     return View();
             }
-            catch( alxExcecao ex )
+            catch ( alxExcecao ex )
             {
                 return View( new RegiaoVM()
                 {
@@ -85,7 +87,7 @@ namespace TSALX.Controllers
                     regiao = new Regiao(),
                     ListaCountry = _apiFutebol.listarBandeira(),
                     TextoMSG = ex.Mensagem,
-                    TipoMSG =  Convert.ToInt16( ex.Tipo )
+                    TipoMSG = Convert.ToInt16( ex.Tipo )
                 } );
             }
         }
@@ -93,10 +95,10 @@ namespace TSALX.Controllers
         [HttpGet]
         public ActionResult editar( int id )
         {
-            return View( new RegiaoVM() 
-            { 
+            return View( new RegiaoVM()
+            {
                 Titulo = "Editar Região",
-                regiao = _oDAO.obter( id ), 
+                regiao = _oDAO.obter( id ),
                 ListaCountry = _apiFutebol.listarBandeira()
             } );
         }
@@ -106,7 +108,7 @@ namespace TSALX.Controllers
         {
             try
             {
-                if( ModelState.IsValid )
+                if ( ModelState.IsValid )
                 {
                     if ( !string.IsNullOrWhiteSpace( pobj.regiao.CodCountry ) )
                     {
@@ -121,7 +123,7 @@ namespace TSALX.Controllers
                     return View();
 
             }
-            catch( alxExcecao ex )
+            catch ( alxExcecao ex )
             {
                 return View( new RegiaoVM()
                 {
@@ -142,12 +144,12 @@ namespace TSALX.Controllers
                 _oDAO.excluir( id );
                 return RedirectToAction( "index" );
             }
-            catch( alxExcecao ex )
+            catch ( alxExcecao ex )
             {
-               return RedirectToAction( "index", ex  );
+                return RedirectToAction( "index", ex );
             }
 
         }
-        
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 
 using Newtonsoft.Json.Linq;
@@ -24,7 +25,8 @@ namespace TSALX.Servico
             _oRequest.Headers.Add( "x-rapidapi-host", "v3.football.api-sports.io" );
             _oRequest.Headers.Add( "x-rapidapi-key", strKey );
         }
-        
+
+        #region bandeira
         public List<Bandeira> listarBandeira()
         {
             List<Bandeira> lstRet = null;
@@ -32,7 +34,7 @@ namespace TSALX.Servico
             _oRequest.Headers.Remove( "x-rapidapi-host" );
             _oRequest.Headers.Remove( "x-rapidapi-key" );
             _oRequest.RequestUri = new Uri( "https://flagcdn.com/en/codes.json" );
-            
+
             HttpClient oBrowse = new HttpClient();
 
             HttpResponseMessage oResposta = oBrowse.SendAsync( _oRequest ).Result;
@@ -42,16 +44,16 @@ namespace TSALX.Servico
                 string strDados = oResposta.Content
                                           .ReadAsStringAsync()
                                           .Result;
-                
+
                 lstRet = new List<Bandeira>();
                 JObject oSigla = JObject.Parse( strDados );
 
-                foreach( var itm in oSigla )
+                foreach ( var itm in oSigla )
                 {
-                    lstRet.Add( new Bandeira() 
-                    { 
+                    lstRet.Add( new Bandeira()
+                    {
                         Sigla = itm.Key.ToUpper(),
-                        NomePais = itm.ToString()
+                        NomePais = itm.Value.ToString()
                     } );
                 }
 
@@ -59,9 +61,15 @@ namespace TSALX.Servico
 
             return lstRet;
         }
-
+        public string obterNomeBandeira( string pstrSigla )
+        {
+            return listarBandeira().Where( b => b.Sigla == pstrSigla )
+                                   .FirstOrDefault()
+                                   .NomePais;
+        }
+        #endregion
         #region Liga
-        public List<Liga> pesquisarLiga( string pstrNomeLiga ) 
+        public List<Liga> pesquisarLiga( string pstrNomeLiga )
         {
             List<Liga> lstRet = null;
             _oRequest.RequestUri = new Uri( $"https://v3.football.api-sports.io/leagues?serach={pstrNomeLiga}" );

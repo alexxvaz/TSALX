@@ -19,7 +19,7 @@ namespace TSALX.DAO
         {
             _oBD = new BD( Util.ConexaoBD );
         }
-        
+
         public List<Regiao> listar()
         {
             List<Regiao> lst = new List<Regiao>();
@@ -28,20 +28,20 @@ namespace TSALX.DAO
             {
                 DataTableReader rd = _oBD.executarQuery( "SELECT IDRegiao, NomeRegiao, SiglaRegiao, Country FROM Regiao ORDER BY NomeRegiao" );
 
-                while( rd.Read() )
+                while ( rd.Read() )
                 {
                     lst.Add( new Regiao()
                     {
                         IDRegiao = Convert.ToInt16( rd[ "IDRegiao" ] ),
                         Nome = rd[ "NomeRegiao" ].ToString(),
-                        Sigla = rd[ "SiglaRegiao" ].ToString(), 
+                        Sigla = rd[ "SiglaRegiao" ].ToString(),
                         Bandeira = Util.informarBandeira( rd[ 2 ].ToString() ),
                         Country = rd[ "Country" ].ToString()
                     } );
                 }
 
             }
-            catch( alxExcecao ex )
+            catch ( alxExcecao ex )
             {
                 new TratamentoErro( ex ).tratarErro();
                 lst = null;
@@ -57,17 +57,17 @@ namespace TSALX.DAO
             {
                 StringBuilder oStrDML = new StringBuilder();
 
-                if( pobjRegiao.IDRegiao == 0 ) // Inserir
+                if ( pobjRegiao.IDRegiao == 0 ) // Inserir
                 {
                     int intProximoID = Util.informarProximoID( "Regiao", "IDRegiao" );
 
-                    if( intProximoID > 0 )
+                    if ( intProximoID > 0 )
                     {
                         oStrDML.Append( "INSERT INTO Regiao " );
                         oStrDML.AppendFormat( "VALUES ( {0}, NULL, '{1}' ", intProximoID, pobjRegiao.Nome.Replace( "'", "''" ) );
 
                         // SiglaRegiao
-                        if ( ! string.IsNullOrEmpty( pobjRegiao.Sigla) )
+                        if ( !string.IsNullOrEmpty( pobjRegiao.Sigla ) )
                             oStrDML.AppendFormat( ", '{0}' ", pobjRegiao.Sigla.ToUpper() );
                         else
                             oStrDML.Append( ", NULL " );
@@ -90,7 +90,7 @@ namespace TSALX.DAO
                     oStrDML.Append( "UPDATE Regiao SET " );
                     oStrDML.AppendFormat( "NomeRegiao = '{0}' ", pobjRegiao.Nome.Replace( "'", "''" ) );
 
-                    if( !string.IsNullOrEmpty( pobjRegiao.Sigla ) )
+                    if ( !string.IsNullOrEmpty( pobjRegiao.Sigla ) )
                         oStrDML.AppendFormat( ", SiglaRegiao = '{0}' ", pobjRegiao.Sigla.ToUpper() );
                     else
                         oStrDML.Append( ", SiglaRegiao = NULL" );
@@ -126,7 +126,7 @@ namespace TSALX.DAO
                                          IDEquipe = intEquipeID,
                                          IDRegiao = shtRegiaoID,
                                          Nome = pobjRegiao.Nome
-                                     });
+                                     } );
 
                     _oBD.executarDML( "UPDATE Regiao SET IDEquipe = {0} WHERE IDRegiao = {1}", intEquipeID, shtRegiaoID );
                 }
@@ -134,21 +134,21 @@ namespace TSALX.DAO
                     _oBD.executarDML( "UPDATE Regiao SET IDEquipe = NULL WHERE IDRegiao = {0}", shtRegiaoID );
 
             }
-            catch( alxExcecao ex )
+            catch ( alxExcecao ex )
             {
-                if( ex.Mensagem.Contains( "UK_Regiao_Nome" ) )
+                if ( ex.Mensagem.Contains( "UK_Regiao_Nome" ) )
                     throw new alxExcecao( "O nome da região '{0}' já foi cadastrada", pobjRegiao.Nome );
                 else
                 {
                     if ( ex.Tipo != ErroTipo.Processo )
                         new TratamentoErro( ex ).tratarErro();
-                        
+
                     throw ex;
-                    
+
                 }
 
             }
-            catch( Exception ex )
+            catch ( Exception ex )
             {
                 new TratamentoErro( ex ).tratarErro();
                 throw new alxExcecao( "Problema ao salvar o Região" );
@@ -161,7 +161,7 @@ namespace TSALX.DAO
             {
                 _oBD.executarDML( "DELETE FROM Regiao WHERE IDRegiao = {0}", pintID );
             }
-            catch( alxExcecao ex )
+            catch ( alxExcecao ex )
             {
                 new TratamentoErro( ex ).tratarErro();
                 throw ex;
@@ -176,7 +176,7 @@ namespace TSALX.DAO
             {
                 DataTableReader rd = _oBD.executarQuery( "SELECT IDRegiao, NomeRegiao, SiglaRegiao, IDEquipe, Country FROM Regiao WHERE IDRegiao = {0}", pintID );
 
-                if( rd.Read() )
+                if ( rd.Read() )
                 {
                     oRet = new Regiao()
                     {
@@ -190,7 +190,7 @@ namespace TSALX.DAO
                     };
                 }
             }
-            catch( alxExcecao ex )
+            catch ( alxExcecao ex )
             {
                 new TratamentoErro( ex ).tratarErro();
             }
