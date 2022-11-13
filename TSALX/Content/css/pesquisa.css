@@ -1,0 +1,25 @@
+﻿.modal h5 {
+    font-family: 'Nunito';
+    font-size: 1.2em;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 0px;
+}
+.filtro {
+    background-color: #f0f0f0;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+.filtro h4 {
+    color: #02066f;
+}
+.sem-registros{
+    text-align:center;
+    font-weight: 600;
+    color: #585858;
+    font-size:1.1rem;
+}
+.modal table {
+    border-bottom: 2px solid #9b9ea1;
+}

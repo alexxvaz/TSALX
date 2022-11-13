@@ -67,10 +67,10 @@ namespace TSALX.Servico
                 if( pintAPIID.Value > 0 )
                     return $"https://media.api-sports.io/football/teams/{pintAPIID.Value}.png";
                 else
-                    return string.Empty;
+                    return "/Content/img/escudo.png";
             }
             else
-                return string.Empty;
+                return "/Content/img/escudo.png";
         }
     }
 }

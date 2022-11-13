@@ -72,7 +72,7 @@ namespace TSALX.DAO
                     if( intProximoID > 0 )
                     {
                         oStrDML.Append( "INSERT INTO Equipe " );
-                        oStrDML.AppendFormat( "VALUES ( {0}, {1}, '{2}', {3} )", intProximoID, pobjEquipe.IDRegiao, pobjEquipe.Nome.Replace( "'", "''" ), pobjEquipe.IDAPI );
+                        oStrDML.AppendFormat( "VALUES ( {0}, {1}, '{2}', {3} )", intProximoID, pobjEquipe.IDRegiao, pobjEquipe.Nome.Replace( "'", "''" ), pobjEquipe.IDAPI > 0? pobjEquipe.IDAPI.ToString(): "NULL" );
 
                         intIDRet = intProximoID;
                     }
@@ -84,7 +84,7 @@ namespace TSALX.DAO
                     oStrDML.Append( "UPDATE Equipe SET " );
                     oStrDML.AppendFormat( "NomeEquipe = '{0}' ", pobjEquipe.Nome.Replace( "'", "''" ) );
                     oStrDML.AppendFormat( ", IDRegiao = {0}", pobjEquipe.IDRegiao );
-                    oStrDML.AppendFormat( ", IDAPI_Equipe = {0}", pobjEquipe.IDAPI  );
+                    oStrDML.AppendFormat( ", IDAPI_Equipe = {0}", pobjEquipe.IDAPI > 0? pobjEquipe.IDAPI.ToString():"NULL"  );
                     oStrDML.AppendFormat( " WHERE IDEquipe = {0}", pobjEquipe.IDEquipe );
 
                     intIDRet = pobjEquipe.IDEquipe;

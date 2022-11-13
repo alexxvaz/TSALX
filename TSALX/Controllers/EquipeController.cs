@@ -1,21 +1,63 @@
 ﻿using Alxware.Erro;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using TSALX.DAO;
-using System.Linq;
 using TSALX.Models;
+using TSALX.Pesquisa;
+using TSALX.Servico;
+using TSALX.ViewModel;
 
 namespace TSALX.Controllers
 {
     public class EquipeController : Controller
     {
+
+        private EquipePesquisa obterPesquisa( List<Regiao> plstRegiao )
+        {
+            return new EquipePesquisa()
+            {
+                ListaLiga = new List<Campeonato>(),
+                ListaTemporadas = new List<Temporada>(),
+                ListaRegiao = plstRegiao.Where( r => !string.IsNullOrWhiteSpace( r.Country.Trim() ) )
+                                                           .ToList()
+            };
+
+        }
         // GET: Equipe
         public ActionResult Index()
         {
-            if( Request.QueryString[ "Mensagem" ] != null )
-                ViewBag.ErroMensagem = Request.QueryString[ "Mensagem" ];
+            string strMensagem = string.Empty;
+            ErroTipo enuTipo = ErroTipo.Processo;
 
-            return View( new EquipeDAO().listar() );
+            if ( Request.QueryString[ "Mensagem" ] != null )
+            {
+                strMensagem = Request.QueryString[ "Mensagem" ];
+
+                switch ( Request.QueryString[ "Tipo" ] )
+                {
+                    case "Processo":
+                        enuTipo = ErroTipo.Processo;
+                        break;
+                    case "Dados":
+                        enuTipo = ErroTipo.Dados;
+                        break;
+                    case "Sistema":
+                        enuTipo = ErroTipo.Sistema;
+                        break;
+                }
+            }
+
+
+            return View( new EquipePG() 
+            { 
+                Titulo = "Time",
+                ListaEquipe = new EquipeDAO().listar(),
+                TextoMSG = strMensagem,
+                TipoMSG = Convert.ToInt16( enuTipo )
+
+            } );
         }
 
         [HttpGet]
@@ -23,21 +65,27 @@ namespace TSALX.Controllers
         {
             ModelState.Clear();
 
-            Models.EquipePagina objEquipe = new Models.EquipePagina();
-            objEquipe.ListaRegiao = new RegiaoDAO().listar();
+            List<Regiao> lstRegiao = new RegiaoDAO().listar();
 
-            return View( objEquipe.equipe );
+            return View( new EquipeVM() { 
+                Titulo = "Novo Time",
+                ListaRegiao = lstRegiao,
+                equipe = new Equipe(),
+                Pesquisa = obterPesquisa( lstRegiao )
+
+            } );
+            
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult novo( Models.Equipe pobj )
+        public ActionResult novo( EquipeVM pobj )
         {
             try
             {
                 if( ModelState.IsValid )
                 {
                     EquipeDAO obj = new EquipeDAO();
-                    obj.salvar( pobj );
+                    obj.salvar( pobj.equipe );
 
                     return RedirectToAction( "Index" );
                 }
@@ -46,9 +94,16 @@ namespace TSALX.Controllers
             }
             catch( alxExcecao ex )
             {
-                ViewBag.ErroMensagem = ex.Mensagem;
-                //pobj.ListaRegiao = new RegiaoDAO().listar();
-                return View( pobj );
+                List<Regiao> lstRegiao = new RegiaoDAO().listar();
+
+                return View( new EquipeVM()
+                {
+                    Titulo = "Novo Time",
+                    ListaRegiao = lstRegiao,
+                    Pesquisa = obterPesquisa( lstRegiao ),
+                    TextoMSG = ex.Mensagem,
+                    TipoMSG = Convert.ToInt16( ex.Tipo )
+                } );
             }
         }
         
@@ -58,29 +113,23 @@ namespace TSALX.Controllers
             ModelState.Clear();
 
             List<Regiao> lstRegiao = new RegiaoDAO().listar();
-                                                          
-            Models.EquipePesquisa oPesquisa = new Models.EquipePesquisa()
-            {
-                ListaLiga = new List<Models.Campeonato>(),
-                ListaTemporadas = new List<Models.Temporada>(),
-                ListaRegiao = lstRegiao.Where( r => !string.IsNullOrWhiteSpace( r.Country.Trim() ) )
-                                                           .ToList()
-            };
 
-            return View( new Models.EquipePagina() 
+            return View( new EquipeVM()
             {
+                Titulo = "Editar Time",
                 equipe = new EquipeDAO().obter( id ),
                 ListaRegiao = lstRegiao,
-                Pesquisa = oPesquisa
+                Pesquisa = obterPesquisa( lstRegiao )
             } );
+
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult editar( Models.EquipePagina pobj )
+        public ActionResult editar(EquipeVM pobj )
         {
             try
             {
-                if( ModelState.IsValid )
+                if ( ModelState.IsValid )
                 {
                     new EquipeDAO().salvar( pobj.equipe );
                     return RedirectToAction( "index" );
@@ -88,24 +137,21 @@ namespace TSALX.Controllers
                 else
                     return View();
             }
-            catch( alxExcecao ex )
+            catch ( alxExcecao ex )
             {
-                ViewBag.ErroMensagem = ex.Mensagem;
                 List<Regiao> lstRegiao = new RegiaoDAO().listar();
 
-                Models.EquipePesquisa oPesquisa = new Models.EquipePesquisa()
+                return View( new EquipeVM()
                 {
-                    ListaRegiao = lstRegiao,
-                    ListaLiga = new List<Models.Campeonato>(),
-                    ListaTemporadas = new List<Models.Temporada>()
-                };
-                return View( new Models.EquipePagina()
-                {
+                    Titulo = "Editar Time",
                     equipe = pobj.equipe,
                     ListaRegiao = lstRegiao,
-                    Pesquisa = oPesquisa
+                    Pesquisa = obterPesquisa( lstRegiao ),
+                    TextoMSG = ex.Mensagem,
+                    TipoMSG = Convert.ToInt16( ex.Tipo )
                 } );
             }
+            
         }
 
         public ActionResult excluir( int id )
@@ -121,5 +167,12 @@ namespace TSALX.Controllers
             }
         }
         
+
+        public JsonResult pesquisarEquipe( string nome )
+        {
+            APIFutebol apiEquipe = new APIFutebol();
+            List<Models.API.Equipe> lstRet = apiEquipe.pesquisarEquipe( nome );
+            return Json( lstRet, JsonRequestBehavior.AllowGet );
+        }
     }
 }

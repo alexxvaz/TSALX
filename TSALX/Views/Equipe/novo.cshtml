@@ -1,10 +1,10 @@
-﻿@model TSALX.Models.Equipe
+﻿@model TSALX.ViewModel.EquipeVM
 
 @{
-    ViewBag.Title = "Novo Time";
+    ViewBag.Title = Model.Titulo;
 }
 
-<h1>Novo Time</h1>
+<h1>@Model.Titulo</h1>
 
 <div class="row">
     <div class="col-lg-12 text-right">
@@ -20,19 +20,28 @@
     <div class="row mt-2">
         <div class="col-lg-12">
             <div class="form-group">
-                @Html.LabelFor( m => m.Nome )
-                @Html.TextBoxFor( m => m.Nome, new { @class = "form-control", autocomplete = "on" } )
-                @Html.ValidationMessageFor( m => m.Nome )
+                @Html.LabelFor( m => m.equipe.Nome )
+                @Html.TextBoxFor( m => m.equipe.Nome, new { @class = "form-control", autocomplete = "on" } )
+                @Html.ValidationMessageFor( m => m.equipe.Nome )
             </div>
         </div>
     </div>
 
     <div class="row mt-1">
-        <div class="col-lg-12">
+        <div class="col-lg-10">
             <div class="form-group">
-                @Html.LabelFor( m => m.IDRegiao )
-                @Html.DropDownListFor( m => m.IDRegiao, new SelectList( Model.ListaRegiao, "IDRegiao", "Nome" ), "(selecione)", new { @class = "form-control" } )
-                @Html.ValidationMessageFor( m => m.IDRegiao )
+                @Html.LabelFor( m => m.equipe.IDRegiao )
+                @Html.DropDownListFor( m => m.equipe.IDRegiao, new SelectList( Model.ListaRegiao, "IDRegiao", "Nome" ), "(selecione)", new { @class = "form-control", id= "listaRegiao" } )
+                @Html.ValidationMessageFor( m => m.equipe.IDRegiao )
+            </div>
+        </div>
+        <div class="col-lg-2">
+            @Html.LabelFor( m => m.equipe.IDAPI )
+            <div class="input-group">
+                @Html.TextBoxFor( m => m.equipe.IDAPI, new { @class = "form-control text-right", autocomplete = "off" } )
+                <div class="input-group-append">
+                    <a href="#" data-toggle="modal" data-target="#PesquisaEquipe" class="btn btn-secondary"><i class="fa fa-search" aria-hidden="true"></i></a>
+                </div>
             </div>
         </div>
     </div>
@@ -44,16 +53,17 @@
     </div>
 }
 
-@if( ViewBag.ErroMensagem != null )
+<!-- Pesquisa Equipe -->
+<div id="PesquisaEquipe" class="modal fade modal-pesquisa">
+    @Html.Partial( "pesquisa", Model.Pesquisa )
+</div>
+
+@section Equipe_Novo
 {
-    <div class="row mt-3">
-        <div class="col-lg-12">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                @ViewBag.ErroMensagem
-            </div>
-        </div>
-    </div>
+    <script type="text/javascript">
+        const nTipo = @Model.TipoMSG;
+        const sMsg = "@Model.TextoMSG";
+    </script>
+
+    <script type="text/javascript" src="~/Content/script/js/equipe.js"></script>
 }

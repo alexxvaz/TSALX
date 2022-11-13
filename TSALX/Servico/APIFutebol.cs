@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 
 using Newtonsoft.Json.Linq;
@@ -24,6 +25,8 @@ namespace TSALX.Servico
             _oRequest.Headers.Add( "User-Agent", "TSALX" );
             _oRequest.Headers.Add( "x-rapidapi-host", "v3.football.api-sports.io" );
             _oRequest.Headers.Add( "x-rapidapi-key", strKey );
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
         }
 
         #region bandeira

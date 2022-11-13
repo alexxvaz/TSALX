@@ -1,4 +1,4 @@
-﻿@model TSALX.Models.EquipePesquisa
+﻿@model TSALX.Pesquisa.EquipePesquisa
 @{
     Layout = null;
 }
@@ -16,39 +16,70 @@
 
         <!-- Corpo -->
         <div class="modal-body">
-
-            <!-- Pesquisa -->
+            <div class="container filtro">
+                <h4>Filtro</h4>
+                <!-- Filtro -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor( m => m.NomeEquipe )
+                            @Html.TextBoxFor( m => m.NomeEquipe, new { @class = "form-control", autocomplete = "on" } )
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            @Html.LabelFor( m => m.NomePais )
+                            @Html.DropDownListFor( m => m.NomePais, new SelectList( Model.ListaRegiao, "IDRegiao", "Nome" ), "(selecione)", new { @class = "form-control", id = "listaRegiaoPesquisa" } )
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            @Html.LabelFor( m => m.IDLiga )
+                            @Html.TextBoxFor( m => m.IDLiga, new { @class = "form-control", autocomplete = "on" } )
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor( m => m.AnoTemporada )
+                            @Html.TextBoxFor( m => m.AnoTemporada, new { @class = "form-control", autocomplete = "on" } )
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 text-center">
+                        <div id="pesquisa_equipe_valida" class="field-validation-error invisible">Informe ao menos um campo para filtrar</div>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <button type="button" class="btn btn-primary" onclick="enviarPesquisaEquipe()"><i class="fa fa-search" aria-hidden="true"></i> Pesquisar</button>
+                        <button type="button" class="btn btn-secondary" onclick="limparPesquisa()"><i class="fa fa-trash-o" aria-hidden="true"></i> Limpar</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Resultado -->
             <div class="row">
                 <div class="col-md-12">
-                    <div class="form-group">
-                        @Html.LabelFor( m => m.NomeEquipe )
-                        @Html.TextBoxFor( m => m.NomeEquipe, new { @class = "form-control", autocomplete = "on" } )
-                    </div>
+                    <h4>Resultado da Pesquisa</h4>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-5">
-                    <div class="form-group">
-                        @Html.LabelFor( m => m.NomePais )
-                        @Html.DropDownListFor( m => m.NomePais, new SelectList( Model.ListaRegiao, "IDRegiao", "Nome" ), "(selecione)", new { @class = "form-control", id= "listaRegiaoPesquisa" } )
-                    </div>
-                </div>
-                <div class="col-md-5">
-                    <div class="form-group">
-                        @Html.LabelFor( m => m.IDLiga )
-                        @Html.TextBoxFor( m => m.IDLiga, new { @class = "form-control", autocomplete = "on" } )
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        @Html.LabelFor( m => m.AnoTemporada )
-                        @Html.TextBoxFor( m => m.AnoTemporada, new { @class = "form-control", autocomplete = "on" } )
-                    </div>
+                <div class="col-md-12">
+                    <table class="table bg-white">
+                        <thead class="bg-primary text-white">
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Nome</th>
+                                <th>País</th>
+                                <th>Seleção</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista_equipe">
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
-            <!-- Resultado -->
-            
         </div>
     </div>
 </div>

@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 
 using Alxware.BD;
 using Alxware.Erro;
+using System.Net;
 
 namespace ImportarTSALX
 {
@@ -30,7 +31,8 @@ namespace ImportarTSALX
                 //criarScriptSportsbetTXT();
                 //criarScriptLiga();
                 //pesquisarLiga( "Ligue" );
-                listarBandeiras();
+                //listarBandeiras();
+                pesquisarEquipe( "Toronto" );
 
 
             }
@@ -398,6 +400,8 @@ namespace ImportarTSALX
             lstLiga.ForEach( l => Console.WriteLine( $"ID: {l.IDLiga}\tNome: {l.Nome}\tPais: {l.NomePais}") );
             }
 
+
+
         }
         public static void listarBandeiras()
         {
@@ -432,6 +436,55 @@ namespace ImportarTSALX
 
                 lstBand.ForEach( p => Console.WriteLine( $"{p.Sigla} => {p.NomePais}" ) );
             }
+        }
+        public static void pesquisarEquipe( string pstrNomeEquipe )
+        {
+            HttpRequestMessage _oRequest = new HttpRequestMessage();
+            string strKey = System.Configuration.ConfigurationManager.AppSettings[ "ChaveAPI" ];
+
+            _oRequest = new HttpRequestMessage();
+            _oRequest.Method = HttpMethod.Get;
+            _oRequest.Headers.Add( "Accept", "*/*" );
+            _oRequest.Headers.Add( "User-Agent", "Thunder Client (https://www.thunderclient.com)" );
+            _oRequest.Headers.Add( "x-rapidapi-host", "v3.football.api-sports.io" );
+            _oRequest.Headers.Add( "x-rapidapi-key", strKey );
+            _oRequest.RequestUri = new Uri( $"https://v3.football.api-sports.io/teams?search={pstrNomeEquipe}" );
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
+            HttpClient oBrowse = new HttpClient();
+
+            HttpResponseMessage oResposta = oBrowse.SendAsync( _oRequest ).Result;
+
+            if ( oResposta.IsSuccessStatusCode )
+            {
+                string strDados = oResposta.Content
+                                           .ReadAsStringAsync()
+                                           .Result;
+
+                IEnumerable<JToken> oEquipe = JObject.Parse( strDados )
+                                                     .SelectToken( "response" );
+
+                List<Equipe> lstEquipe = new List<Equipe>();
+
+                foreach ( JToken itm in oEquipe )
+                {
+                    JToken tokenEquipe = itm.SelectToken( "team" );
+
+                    lstEquipe.Add( new Equipe()
+                    {
+                        ID = tokenEquipe.Value<int>( "id" ),
+                        Nome = tokenEquipe.Value<string>( "name" ),
+                        NomePais = tokenEquipe.Value<string>( "country" ),
+                        Selecao = tokenEquipe.Value<bool>( "national" )
+                    } );
+                }
+
+                lstEquipe.ForEach( l => Console.WriteLine( $"ID: {l.ID}\tNome: {l.Nome}\tPais: {l.NomePais}\tSeleção:{l.Selecao}" ) );
+            }
+
+
+
         }
         #endregion
     }

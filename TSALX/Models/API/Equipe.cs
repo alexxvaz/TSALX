@@ -5,7 +5,13 @@
         public bool Selecao { get; set; }
         public override string Escudo
         {
-            get { return $"https://media.api-sports.io/football/teams/{this.ID}.png"; }
+            get 
+            {
+                if ( this.ID > 0 )
+                    return $"https://media.api-sports.io/football/teams/{this.ID}.png";
+                else
+                    return "/Content/img/escudo.png";
+            }
         }
     }
 }
