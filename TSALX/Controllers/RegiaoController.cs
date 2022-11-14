@@ -12,7 +12,7 @@ namespace TSALX.Controllers
 {
     public class RegiaoController : Controller
     {
-        private Servico.APIFutebol _apiFutebol = new Servico.APIFutebol();
+        private APIFutebol _apiFutebol = new APIFutebol();
         private DAO.RegiaoDAO _oDAO = new DAO.RegiaoDAO();
 
         public ActionResult Index()
