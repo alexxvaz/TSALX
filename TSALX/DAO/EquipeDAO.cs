@@ -6,6 +6,7 @@ using System.Text;
 using Alxware.BD;
 using Alxware.Erro;
 using TSALX.Servico;
+using TSALX.Models;
 
 namespace TSALX.DAO
 {
@@ -18,7 +19,7 @@ namespace TSALX.DAO
             _oBD = new BD( Util.ConexaoBD );
         }
 
-        public List<Models.EquipeLista> listar()
+        public List<EquipeLista> listar()
         {
             List<Models.EquipeLista> lst = new List<Models.EquipeLista>();
 
@@ -57,7 +58,7 @@ namespace TSALX.DAO
 
             return lst;
         }
-        public int salvar( Models.Equipe pobjEquipe )
+        public int salvar( Equipe pobjEquipe )
         {
             int intIDRet = -1;
 
@@ -137,9 +138,9 @@ namespace TSALX.DAO
             }
         }
 
-        public Models.Equipe obter( int pintID )
+        public Equipe obter( int pintID )
         {
-            Models.Equipe oRet = null;
+            Equipe oRet = null;
 
             try
             {
@@ -150,7 +151,7 @@ namespace TSALX.DAO
 
                 if( rd.Read() )
                 {
-                    oRet = new Models.Equipe()
+                    oRet = new Equipe()
                     {
                         IDEquipe = rd.GetInt32( 0 ),
                         IDRegiao = rd.GetInt16( 1 ),
