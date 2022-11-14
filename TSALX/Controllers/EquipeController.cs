@@ -1,8 +1,10 @@
-﻿using Alxware.Erro;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+
+using Alxware.Erro;
+
 using TSALX.DAO;
 using TSALX.Models;
 using TSALX.Pesquisa;
@@ -13,6 +15,7 @@ namespace TSALX.Controllers
 {
     public class EquipeController : Controller
     {
+        private EquipeDAO _oDAO = new EquipeDAO();
 
         private EquipePesquisa obterPesquisa( List<Regiao> plstRegiao )
         {
@@ -84,9 +87,7 @@ namespace TSALX.Controllers
             {
                 if( ModelState.IsValid )
                 {
-                    EquipeDAO obj = new EquipeDAO();
-                    obj.salvar( pobj.equipe );
-
+                    _oDAO.salvar( pobj.equipe );
                     return RedirectToAction( "Index" );
                 }
                 else
@@ -131,7 +132,7 @@ namespace TSALX.Controllers
             {
                 if ( ModelState.IsValid )
                 {
-                    new EquipeDAO().salvar( pobj.equipe );
+                    _oDAO.salvar( pobj.equipe );
                     return RedirectToAction( "index" );
                 }
                 else
@@ -158,7 +159,7 @@ namespace TSALX.Controllers
         {
             try
             {
-                new EquipeDAO().excluir( id );
+                _oDAO.excluir( id );
                 return RedirectToAction( "index" );
             }
             catch( alxExcecao ex )
