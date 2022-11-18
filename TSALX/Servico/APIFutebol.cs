@@ -75,7 +75,7 @@ namespace TSALX.Servico
         public List<Liga> pesquisarLiga( string pstrNomeLiga )
         {
             List<Liga> lstRet = null;
-            _oRequest.RequestUri = new Uri( $"https://v3.football.api-sports.io/leagues?serach={pstrNomeLiga}" );
+            _oRequest.RequestUri = new Uri( $"https://v3.football.api-sports.io/leagues?search={pstrNomeLiga}" );
             HttpClient oBrowse = new HttpClient();
 
             HttpResponseMessage oResposta = oBrowse.SendAsync( _oRequest ).Result;

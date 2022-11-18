@@ -1,0 +1,60 @@
+﻿@model TSALX.ViewModel.LigaPG
+@{
+    ViewBag.Title = Model.Titulo;
+}
+
+<h1>@Model.Titulo</h1>
+
+<div class="row mt-4">
+    <div class="col-md-12 text-right">
+        <a href="@Url.Action("nova", "Liga")" class="btn btn-warning"><i class="fa fa-plus" aria-hidden="true"></i> Nova Liga</a>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-md-12">
+        <table class="table bg-white" id="LigaTabela">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>&nbsp;</th> <!-- Escudo-->
+                    <th class="w-50">Nome</th>
+                    <th class="text-center">Seleção?</th>
+                    <th>&nbsp;</th> <!-- Bandeira -->
+                    <th>Região</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach ( var item in Model.ListaLiga )
+                {
+
+                <tr>
+                    <td><img src="@item.Escudo" class="logo" /></td>
+                    <td class="w-50">@item.Nome</td>
+                    <td class="text-center text-warning">
+                        @if ( item.Selecao )
+                        {
+                            <i class="fa fa-check-circle-o fa-lg" aria-hidden="true"></i>
+                        }
+                    </td>
+                    <td class="text-center"><img src="@item.Bandeira" alt="tsalx - Bandeira" class="bandeira" /></td>
+                    <td>@item.NomeRegiao</td>
+                    <td class="text-center"><a href="@Url.Action( "editar", "Liga", new { id = item.IDLiga } )" class="text-secondary"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
+                    <td class="text-center"><a href="@Url.Action( "excluir", "Liga", new { id = item.IDLiga } )" onclick="return confirm('Deseja excluir o item @item.Nome?');" class="text-danger"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a></td>
+                </tr>
+
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Liga_Principal{
+    <script type="text/javascript">
+        $(document).ready(() => {
+            exibirMensagem( @Model.TipoMSG, "@Model.TextoMSG");
+        });
+    </script>
+}

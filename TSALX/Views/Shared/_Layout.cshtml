@@ -51,6 +51,7 @@
                             <div class="dropdown-menu bg-dark" aria-labelledby="lnkDrop">
                                 @Html.ActionLink( "Região", "index", "Regiao", null, new { @class = "dropdown-item text-light" } )
                                 @Html.ActionLink( "Times", "index", "Equipe", null, new { @class = "dropdown-item text-light" } )
+                                @Html.ActionLink( "Liga", "index", "Liga", null, new { @class = "dropdown-item text-light" } )
                                 <div class="dropdown-divider"></div>
                                 @Html.ActionLink( "Campeonato", "index", "Campeonato", null, new { @class = "dropdown-item text-light" } )
                                 @Html.ActionLink( "Temporada", "index", "Temporada", null, new { @class = "dropdown-item text-light" } )
@@ -123,6 +124,10 @@
         @RenderSection( "Equipe_Principal", false )
         @RenderSection( "Equipe_Novo", false )
         @RenderSection( "Equipe_Editar", false )
+
+        @RenderSection( "Liga_Principal", false )
+        @RenderSection( "Liga_Nova", false )
+        @RenderSection( "Liga_Editar", false )
 
     </div>
 </body>

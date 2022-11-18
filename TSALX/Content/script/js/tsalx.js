@@ -13,6 +13,7 @@
     $('#CampeonatoTabela').DataTable(arrOpcao);
     $('#MercadoTabela').DataTable(arrOpcao);
     $('#RegiaoTabela').DataTable(arrOpcao);
+    $('#LigaTabela').DataTable(arrOpcao);
 
 });
 

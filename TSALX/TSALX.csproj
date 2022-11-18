@@ -117,11 +117,13 @@
     <Content Include="Content\img\fifa.png" />
     <Content Include="Content\img\logo.png" />
     <None Include="Content\script\jquery.validate-vsdoc.js" />
+    <Content Include="Content\img\logo-liga.png" />
     <Content Include="Content\script\js\equipe.js" />
     <Content Include="Content\script\jquery.validate.js" />
     <Content Include="Content\script\jquery.validate.min.js" />
     <Content Include="Content\script\jquery.validate.unobtrusive.js" />
     <Content Include="Content\script\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Content\script\js\liga.js" />
     <Content Include="Content\script\js\regiao.js" />
     <Content Include="Content\script\js\tsalx.js" />
     <Content Include="Global.asax" />
@@ -136,13 +138,18 @@
     <Compile Include="Controllers\EntradaController.cs" />
     <Compile Include="Controllers\EquipeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LigaController.cs" />
     <Compile Include="Controllers\MovFinanceiraController.cs" />
     <Compile Include="Controllers\MercadoController.cs" />
     <Compile Include="Controllers\PartidaController.cs" />
     <Compile Include="Controllers\RegiaoController.cs" />
     <Compile Include="Controllers\TemporadaController.cs" />
+    <Compile Include="DAO\LigaDAO.cs" />
     <Compile Include="Models\EquipeLista.cs" />
+    <Compile Include="Models\Liga.cs" />
+    <Compile Include="Models\LigaLista.cs" />
     <Compile Include="Models\Regiao.cs" />
+    <Compile Include="Pesquisa\LigaPesquisa.cs" />
     <Compile Include="Servico\APIFutebol.cs" />
     <Compile Include="DAO\CampeonatoDAO.cs" />
     <Compile Include="DAO\EntradaDAO.cs" />
@@ -173,6 +180,8 @@
     <Compile Include="Pesquisa\EquipePesquisa.cs" />
     <Compile Include="ViewModel\EquipePG.cs" />
     <Compile Include="ViewModel\EquipeVM.cs" />
+    <Compile Include="ViewModel\LigaPG.cs" />
+    <Compile Include="ViewModel\LigaVM.cs" />
     <Compile Include="ViewModel\RegiaoPG.cs" />
     <Compile Include="ViewModel\RegiaoVM.cs" />
   </ItemGroup>
@@ -206,6 +215,10 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Views\MovFinanceira\extratodia.cshtml" />
     <Content Include="Views\Equipe\pesquisa.cshtml" />
+    <Content Include="Views\Liga\Index.cshtml" />
+    <Content Include="Views\Liga\nova.cshtml" />
+    <Content Include="Views\Liga\editar.cshtml" />
+    <Content Include="Views\Liga\pesquisa.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

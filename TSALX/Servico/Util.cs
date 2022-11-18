@@ -72,5 +72,17 @@ namespace TSALX.Servico
             else
                 return "/Content/img/escudo.png";
         }
+        public static string informarEscudoLiga( int? pintAPIID )
+        {
+            if ( pintAPIID.HasValue )
+            {
+                if ( pintAPIID.Value > 0 )
+                    return $"https://media.api-sports.io/football/leagues/{pintAPIID.Value}.png";
+                else
+                    return "/Content/img/logo-liga.png";
+            }
+            else
+                return "/Content/img/logo-liga.png";
+        }
     }
 }

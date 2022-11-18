@@ -4,7 +4,7 @@
     {
         public override string Escudo
         {
-            get { return $"https://media.api-sports.io/football/teams/{this.ID}.png"; }
+            get { return $"https://media.api-sports.io/football/leagues/{this.ID}.png"; }
         }
     }
 }

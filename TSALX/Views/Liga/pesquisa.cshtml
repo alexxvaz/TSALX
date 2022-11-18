@@ -1,0 +1,78 @@
+﻿@model TSALX.Pesquisa.LigaPesquisa
+@{
+    Layout = null;
+}
+<div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+
+        <!-- Cabeçalho -->
+        <div class="modal-header bg-primary">
+            <h5>Pesquisa Liga</h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <!-- Corpo -->
+        <div class="modal-body">
+            <div class="container filtro">
+                <h4>Filtro</h4>
+                <!-- Filtro -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor( m => m.NomeLiga )
+                            @Html.TextBoxFor( m => m.NomeLiga, new { @class = "form-control", autocomplete = "on" } )
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="form-group">
+                            @Html.LabelFor( m => m.NomePais )
+                            @Html.DropDownListFor( m => m.NomePais, new SelectList( Model.ListaRegiao, "IDRegiao", "Nome" ), "(selecione)", new { @class = "form-control", id = "listaRegiaoPesquisa" } )
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @Html.LabelFor( m => m.AnoTemporada )
+                            @Html.TextBoxFor( m => m.AnoTemporada, new { @class = "form-control", autocomplete = "on" } )
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 text-center">
+                        <div id="pesquisa_liga_valida" class="field-validation-error invisible">Informe ao menos um campo para filtrar</div>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <button type="button" class="btn btn-primary" onclick="enviarPesquisaLiga()"><i class="fa fa-search" aria-hidden="true"></i> Pesquisar</button>
+                        <button type="button" class="btn btn-secondary" onclick="limparPesquisa()"><i class="fa fa-trash-o" aria-hidden="true"></i> Limpar</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Resultado -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Resultado da Pesquisa</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table bg-white">
+                        <thead class="bg-primary text-white">
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th class="w-50">Nome</th>
+                                <th>País</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista_liga">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
