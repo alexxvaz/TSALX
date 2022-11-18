@@ -1,194 +1,71 @@
-﻿@model TSALX.Models.Temporada
+﻿@model TSALX.ViewModel.TemporadaVM
 
 @{
-    ViewBag.Title = "Temporada";
+    ViewBag.Title = Model.Titulo;
 }
 
-<h1>Temporada</h1>
+<h1>@Model.Titulo</h1>
 
-@if( ViewBag.ErroMensagem != null )
+<div class="row mt-5">
+    <div class="col-md-12">
+        <table class="table bg-white" id="TSALXTabela">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th class="w-50 text-center">Ano Inicial</th>
+                    <th class="w-50 text-center">Ano Final</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach ( var item in Model.ListaTemporada )
+                {
+
+                    <tr>
+                        <td class="w-50 text-center">@item.AnoInicial</td>
+                        <td class="w-50 text-center">@item.AnoFinal</td>
+                        <td class="text-center"><a href="@Url.Action( "editar", "Temporada", new { id = item.IDTemporada } )" class="text-secondary"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
+                        <td class="text-center"><a href="@Url.Action( "excluir", "Temporada", new { id = item.IDTemporada } )" onclick="return confirm('Deseja excluir a Temporada?');" class="text-danger"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a></td>
+                    </tr>
+
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@using ( Html.BeginForm() )
 {
-    <div class="row mt-3">
-        <div class="col-lg-12">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                @ViewBag.ErroMensagem
-            </div>
-        </div>
-    </div>
-}
-
-@if( ViewBag.Mensagem != null )
-{
-    <div class="row mt-3">
-        <div class="col-lg-12">
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                @ViewBag.Mensagem
-            </div>
-        </div>
-    </div>
-}
-
-
-@using( Html.BeginForm( "Index", "Temporada", FormMethod.Post ) )
-{
-    @Html.AntiForgeryToken()
-
-    <div class="row mt-4">
-
-        <div class="col-lg-12">
-            <div class="form-group">
-                @Html.DropDownList( "IDCampeonato", new SelectList( Model.ListaCampeonato, "IDCampeonato", "Nome" ), new { @class = "form-control", @onchange = "this.form.submit();" } )
-            </div>
-        </div>
-
-    </div>
-
-
-    <h3>Times</h3>
-
-    <div class="row mt-4">
-        <div class="col-lg-4">
-            <input type="text" class="form-control" placeholder="Filtro por nome da equipe" id="filtro_equipe" />
-        </div>
-    </div>
-
-    <div class="row mt-3" id="filtro_equipes">
-
-        <!-- Coluna 1 -->
-        <div class="col-lg-3">
-            @foreach( var equipe in Model.Coluna1Equipe )
-            {
-                <div class="row mb-2">
-                    <div class="col-lg-10">
-                        <div class="form-check mb-1">
-                            @Html.CheckBoxFor( x => equipe.Participa, new { @value = @equipe.IDEquipe } )
-                            <span class="@(equipe.Participa? "text-dark font-weight-bold":string.Empty)">
-                                @Html.DisplayFor( x => equipe.NomeEquipe )
-                                @if ( equipe.Selecao )
-                                {
-                                    <em>(seleção nacional)</em>
-                                    <i class="fa fa-certificate" aria-hidden="true"></i>
-                                }
-                            </span>
-
-                        </div>
-
-                    </div>
-                    <div class="col-lg-2">
-                        <img src="@equipe.Bandeira" class="bandeira" alt="tsalx - Temporada" />
-                    </div>
-                </div>
-
-            }
-        </div>
-
-        <!-- Coluna 2 -->
-        <div class="col-lg-3">
-            @foreach( var equipe in Model.Coluna2Equipe )
-            {
-                <div class="row mb-2">
-                    <div class="col-lg-10">
-                        <div class="form-check mb-1">
-                            @Html.CheckBoxFor( x => equipe.Participa, new { @value = @equipe.IDEquipe } )
-                            <span class="@(equipe.Participa? "text-dark font-weight-bold":string.Empty)">
-                                @Html.DisplayFor( x => equipe.NomeEquipe )
-                                @if ( equipe.Selecao )
-                                {
-                                    <em>(seleção nacional)</em>
-                                    <i class="fa fa-certificate" aria-hidden="true"></i>
-                                }
-                            </span>
-
-                        </div>
-
-                    </div>
-                    <div class="col-lg-2">
-                        <img src="@equipe.Bandeira" class="bandeira" alt="tsalx - Temporada" />
-                    </div>
-                </div>
-
-            }
-        </div>
-
-        <!-- Coluna 3 -->
-        <div class="col-lg-3">
-            @foreach( var equipe in Model.Coluna3Equipe )
-            {
-                <div class="row mb-2">
-                    <div class="col-lg-10">
-                        <div class="form-check mb-1">
-                            @Html.CheckBoxFor( x => equipe.Participa, new { @value = @equipe.IDEquipe } )
-                            <span class="@(equipe.Participa? "text-dark font-weight-bold":string.Empty)">
-                                @Html.DisplayFor( x => equipe.NomeEquipe )
-                                @if ( equipe.Selecao )
-                                {
-                                    <em>(seleção nacional)</em>
-                                    <i class="fa fa-certificate" aria-hidden="true"></i>
-                                }
-                            </span>
-                        </div>
-
-                    </div>
-                    <div class="col-lg-2">
-                        <img src="@equipe.Bandeira" class="bandeira" alt="tsalx - Temporada" />
-                    </div>
-                </div>
-            }
-        </div>
-
-        <!-- Coluna 4 -->
-        <div class="col-lg-3">
-            @foreach( var equipe in Model.Coluna4Equipe )
-            {
-                <div class="row mb-2">
-                    <div class="col-lg-10">
-                        <div class="form-check mb-1">
-                            @Html.CheckBoxFor( x => equipe.Participa, new { @value = @equipe.IDEquipe } )
-                            <span class="@(equipe.Participa? "text-dark font-weight-bold":string.Empty)">
-                                @Html.DisplayFor( x => equipe.NomeEquipe )
-                                @if ( equipe.Selecao )
-                                {
-                                    <em>(seleção nacional)</em>
-                                    <i class="fa fa-certificate" aria-hidden="true"></i>
-                                }
-                            </span>
-
-                        </div>
-
-                    </div>
-                    <div class="col-lg-2">
-                        <img src="@equipe.Bandeira" class="bandeira" alt="tsalx - Temporada" />
-                    </div>
-                </div>
-            }
-        </div>
-
-
-    </div>
-
+    @Html.HiddenFor( m => m.temporada.IDTemporada )
     <div class="row mt-5">
-        <div class="col-lg-12 text-right">
-            <button type="submit" formaction="/temporada/gravar" value="gravar" name="salvar" class="btn btn-warning">Salvar</button>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                @Html.LabelFor( m => m.temporada.AnoInicial )
+                @Html.TextBoxFor( m => m.temporada.AnoInicial, new { @class = "form-control text-right", autocomplete = "off", @type = "text" } )
+                @Html.ValidationMessageFor( m => m.temporada.AnoInicial )
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                @Html.LabelFor( m => m.temporada.AnoFinal )
+                @Html.TextBoxFor( m => m.temporada.AnoFinal, new { @class = "form-control text-right", autocomplete = "off", @type = "text" } )
+                @Html.ValidationMessageFor( m => m.temporada.AnoFinal )
+            </div>
+        </div>
+        <div class="col-md-2 alinhamento-vertical">
+            <button type="submit" class="btn btn-warning">Salvar</button>
         </div>
     </div>
-}
 
-@section Filtro_Temporada
+}
+@section Temporada
 {
-    <script>
-        $(document).ready(function () {
-            $("#filtro_equipe").on("keyup", function () {
-                var value = $(this).val().toLowerCase();
-                $("#filtro_equipes div").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
+    <script type="text/javascript">
+        $(document).ready( () => {
+            exibirMensagem(@Model.TipoMSG, "@Model.TextoMSG");
         });
     </script>
 }

@@ -1,28 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace TSALX.Models
 {
     public class Temporada
     {
-        public int IDCampeonato { get; set; }
-        public short Ano { get; set; }
-
-        public string equipe_IDEquipe { get; set; }
-        public List<CampeonatoLista> ListaCampeonato { get; set; }
-        public List<TemporadaEquipe> Coluna1Equipe { get; set; }
-        public List<TemporadaEquipe> Coluna2Equipe { get; set; }
-        public List<TemporadaEquipe> Coluna3Equipe { get; set; }
-        public List<TemporadaEquipe> Coluna4Equipe { get; set; }
+        public int IDTemporada { get; set; }
+        [Display( Name = "Ano Inicial" )]
+        [Required( ErrorMessage = "Informe o ano inicial" )]
+        [Range( 2020, short.MaxValue, ErrorMessage = "O ano inicial deve ser maior que 2020" )]
+        public short AnoInicial { get; set; }
+        [Display( Name = "Ano Final" )]
+        [Required( ErrorMessage = "Informe o ano final" )]
+        [Range( 2020, short.MaxValue, ErrorMessage = "O ano final deve ser maior que 2020" )]
+        [ValidaAno]
+        public short AnoFinal { get; set; }
     }
 
-    public class TemporadaEquipe
+    public class ValidaAno : ValidationAttribute
     {
-        public int IDEquipe { get; set; }
-        public string NomeEquipe { get; set; }
-        public string Bandeira { get; set; }
-        public bool Participa { get; set; }
-        public bool Selecao { get; set; }
+        protected override ValidationResult IsValid( object value, ValidationContext validationContext )
+        {
+            short anoFinal = Convert.ToInt16( value );
+            Temporada oTemp = (Temporada) validationContext.ObjectInstance;
 
+            if ( anoFinal < oTemp.AnoInicial )
+                return new ValidationResult( "Ano inicial é maior que o ano final" );
+            else
+                return ValidationResult.Success;
+        }
     }
-
 }

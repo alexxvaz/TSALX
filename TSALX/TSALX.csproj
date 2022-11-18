@@ -59,6 +59,9 @@
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.5.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web.DynamicData" />
@@ -184,6 +187,7 @@
     <Compile Include="ViewModel\LigaVM.cs" />
     <Compile Include="ViewModel\RegiaoPG.cs" />
     <Compile Include="ViewModel\RegiaoVM.cs" />
+    <Compile Include="ViewModel\TemporadaVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />

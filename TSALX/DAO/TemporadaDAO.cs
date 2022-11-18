@@ -8,34 +8,36 @@ using Alxware.BD;
 using Alxware.Erro;
 
 using TSALX.Servico;
+using TSALX.Models;
 
 namespace TSALX.DAO
 {
     public class TemporadaDAO
     {
         private BD _oBD;
-        private int _intCampeonato;
-        private bool _blnSelecao;
 
-        public TemporadaDAO( int pintCampeonato )
+        public TemporadaDAO( )
         {
-            _intCampeonato = pintCampeonato;
             _oBD = new BD( Util.ConexaoBD );
-            _blnSelecao = Convert.ToBoolean( _oBD.executarScalar( "SELECT SelecaoCampeonato FROM Campeonato WHERE IDCampeonato = {0}", _intCampeonato ) );
         }
 
-        private List<int> listarEquipes()
+        public List<Temporada> listar()
         {
-            List<int> lstRet = null;
+            List<Temporada> lstRet = new List<Temporada>();
 
             try
             {
-                
-                DataTableReader rd = _oBD.executarQuery( "SELECT IDEquipe FROM Temporada WHERE IDCampeonato = {0}", _intCampeonato );
-                lstRet = new List<int>();
+                DataTableReader rd = _oBD.executarQuery( "SELECT IDTemporada, AnoInicial, AnoFinal FROM Temporada" );
 
-                while( rd.Read() )
-                    lstRet.Add( rd.GetInt32( 0 ) );
+                while ( rd.Read() )
+                {
+                    lstRet.Add( new Temporada()
+                    {
+                        IDTemporada = Convert.ToInt32( rd["IDTemporada"]),
+                        AnoInicial = Convert.ToInt16( rd["AnoInicial"]),
+                        AnoFinal = Convert.ToInt16( rd[ "AnoFinal" ] )
+                    } );
+                }
             }
             catch( alxExcecao ex )
             {
@@ -44,131 +46,95 @@ namespace TSALX.DAO
             }
 
             return lstRet;
+         
         }
-
-        public Dictionary<int, List<Models.TemporadaEquipe>> listar()
+        public void salvar( Temporada pobjTemp )
         {
-            const short EUA_MLS = 44;
-
-            Dictionary<int, List<Models.TemporadaEquipe>> dicRet = null;
-
             try
             {
-                StringBuilder oStrQuery = new StringBuilder();
-               
-                oStrQuery.Append( "SELECT r.IDRegiao " );
-                oStrQuery.Append( "  FROM Regiao r " );
-                oStrQuery.Append( " INNER JOIN Campeonato c ON r.IDRegiao = c.IDRegiao " );
-                oStrQuery.Append( " WHERE ( SiglaRegiao IS NOT NULL AND SiglaRegiao NOT IN ('EU', 'AM-SUL', 'AM-NOR') ) " );
-                oStrQuery.AppendFormat(" AND IDCampeonato = {0} ", _intCampeonato );
+                StringBuilder oStrDML = new StringBuilder();
 
-                short shtRegiaoID = Convert.ToInt16( _oBD.executarScalar( oStrQuery.ToString() ) );
-                
-                // Listar os times
-                oStrQuery.Clear();
+                if ( pobjTemp.IDTemporada == 0 ) // Inserir
+                {
+                    int intProximoID = Util.informarProximoID( "Temporada", "IDTemporada" );
 
-                if ( shtRegiaoID == EUA_MLS ) // +1 Região (EUA e Canadá)
-                {
-                    oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao,  " );
-                    oStrQuery.Append( " (SELECT IDEquipe FROM Regiao r WHERE IDEquipe = e.IDEquipe) AS Selecao " );
-                    oStrQuery.Append( "  FROM Regiao r " );
-                    oStrQuery.Append( " INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao " );
-                    oStrQuery.Append( " WHERE r.IDRegiao IN (44, 45) " );
-                    oStrQuery.Append( " ORDER BY NomeEquipe " );
+                    if ( intProximoID > 0 )
+                    {
+                        oStrDML.Append( "INSERT INTO Temporada " );
+                        oStrDML.AppendFormat( "VALUES ( {0}, {1}, {2} )", intProximoID, pobjTemp.AnoInicial, pobjTemp.AnoFinal );
+
+                    }
+                    else
+                        throw new alxExcecao( "Não foi informado o próximo IDTemporada", ErroTipo.Dados );
                 }
-                else if ( shtRegiaoID > 0 ) 
+                else // Alterar
                 {
-                    oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao,  " );
-                    oStrQuery.Append( " (SELECT IDEquipe FROM Regiao r WHERE IDEquipe = e.IDEquipe) AS Selecao " );
-                    oStrQuery.Append( "  FROM Regiao r " );
-                    oStrQuery.Append( " INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao " );
-                    oStrQuery.AppendFormat( " WHERE r.IDRegiao = {0} ", shtRegiaoID );
-                    oStrQuery.Append( " ORDER BY NomeEquipe " );
+                    oStrDML.Append( "UPDATE Temporada SET " );
+                    oStrDML.AppendFormat( "AnoInicial = {0} ", pobjTemp.AnoInicial );
+                    oStrDML.AppendFormat( " ,AnoFinal = {0} ", pobjTemp.AnoFinal );
+                    oStrDML.AppendFormat( " WHERE IDTemporada = {0}", pobjTemp.IDTemporada );
                 }
-                else if ( _blnSelecao )
-                {
-                    oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao, 1 AS Selecao " );
-                    oStrQuery.Append( "  FROM Regiao r " );
-                    oStrQuery.Append( " INNER JOIN Equipe e ON e.IDEquipe = r.IDEquipe" );
-                    oStrQuery.Append( " ORDER BY NomeEquipe " );
-                }
+
+                _oBD.executarDML( oStrDML.ToString() );
+            }
+            catch ( alxExcecao ex )
+            {
+                if ( ex.Mensagem.Contains( "UK_Temporada_Ano" ) )
+                    throw new alxExcecao( "A temporada informada já está cadastrada ano inicial: {0} e ano final: {1}", pobjTemp.AnoInicial, pobjTemp.AnoFinal );
                 else
                 {
-                    oStrQuery.Append( "SELECT e.IDEquipe, NomeEquipe, SiglaRegiao, r.IDRegiao, NomeRegiao,  " );
-                    oStrQuery.Append( " (SELECT IDEquipe FROM Regiao r WHERE IDEquipe = e.IDEquipe) AS Selecao " );
-                    oStrQuery.Append( "  FROM Regiao r " );
-                    oStrQuery.Append( " INNER JOIN Equipe e ON r.IDRegiao = e.IDRegiao " );
-                    oStrQuery.Append( " ORDER BY NomeEquipe " );
-                }
+                    if ( ex.Tipo != ErroTipo.Processo )
+                        new TratamentoErro( ex ).tratarErro();
 
-                DataTableReader rd = _oBD.executarQuery( oStrQuery.ToString() );
-
-                List<int> lstTemporada = this.listarEquipes();
-                List<Models.TemporadaEquipe> lstEquipe = new List<Models.TemporadaEquipe>();
-
-                while( rd.Read() )
-                {
-                    lstEquipe.Add( new Models.TemporadaEquipe()
-                    {
-                        IDEquipe = rd.GetInt32( 0 ), // IDEquipe
-                        NomeEquipe = rd[ "NomeEquipe" ].ToString(),
-                        Bandeira = Util.informarBandeira( rd[ "SiglaRegiao" ].ToString() ),
-                        Participa = lstTemporada.Contains( rd.GetInt32( 0 ) ),
-                        Selecao = !rd.IsDBNull( 5 ) // Seleção
-
-                    } );
-                }
-
-                const int COLUNAS = 4;
-                dicRet = new Dictionary<int, List<Models.TemporadaEquipe>>();
-                int intQtdMaxEquipeColuna = lstEquipe.Count / COLUNAS;
-                int intPos = 0;
-
-                if( ( lstEquipe.Count() % COLUNAS ) != 0 ) intQtdMaxEquipeColuna++;
-
-                for( int intColuna = 1; intColuna <= COLUNAS; intColuna++ )
-                {
-                    dicRet.Add( intColuna, lstEquipe.GetRange( intPos, intQtdMaxEquipeColuna ) );
-
-                    intPos += intQtdMaxEquipeColuna;
-
-                    if( ( intPos + intQtdMaxEquipeColuna ) > lstEquipe.Count )
-                        intQtdMaxEquipeColuna = lstEquipe.Count - intPos;
-                    
+                    throw ex;
                 }
 
             }
-            catch( alxExcecao ex )
+            catch ( Exception ex )
             {
                 new TratamentoErro( ex ).tratarErro();
-                dicRet = null;
+                throw new alxExcecao( "Problema ao salvar a Temporada" );
             }
 
-            return dicRet;
+           
         }
 
-        public bool gravar( IEnumerable<string> plstEquipe )
+        public void excluir( int pintID )
         {
             try
             {
-                List<string> lstDML = new List<string>();
+                _oBD.executarDML( "DELETE FROM Temporada WHERE IDTemporada = {0}", pintID );
+            }
+            catch ( alxExcecao ex )
+            {
+                new TratamentoErro( ex ).tratarErro();
+                throw ex;
+            }
+        }
+        public Temporada obter( int pintID )
+        {
+            Temporada oRet = null;
 
-                lstDML.Add( String.Format( "DELETE FROM Temporada WHERE IDCampeonato = {0}", _intCampeonato ) );
+            try
+            {
+                DataTableReader rd = _oBD.executarQuery( "SELECT  AnoInicial, AnoFinal FROM Temporada WHERE IDTemporada = {0}", pintID );
 
-                foreach( string intEquipe in plstEquipe )
-                    lstDML.Add( string.Format( "INSERT INTO Temporada VALUES ( {0}, {1} )", _intCampeonato, intEquipe ) );
-
-                _oBD.executarDML( lstDML );
-
-                return true;
-
+                if( rd.Read() )
+                {
+                    oRet = new Temporada()
+                    {
+                        IDTemporada = pintID,
+                        AnoInicial = Convert.ToInt16( rd[ "AnoInicial" ] ),
+                        AnoFinal = Convert.ToInt16( rd[ "AnoFinal" ] )
+                    };
+                }
             }
             catch( alxExcecao ex )
             {
                 new TratamentoErro( ex ).tratarErro();
-                return false;
             }
 
+            return oRet;
         }
     }
 }

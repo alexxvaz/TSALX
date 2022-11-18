@@ -14,6 +14,7 @@
     $('#MercadoTabela').DataTable(arrOpcao);
     $('#RegiaoTabela').DataTable(arrOpcao);
     $('#LigaTabela').DataTable(arrOpcao);
+    $('#TSALXTabela').DataTable(arrOpcao);
 
 });
 
@@ -29,7 +30,7 @@ function exibirMensagem(tipo, mensagem) {
             "positionClass": "toast-top-full-width",
             "preventDuplicates": true,
             "onclick": null,
-            "showDuration": "500",
+            "showDuration": "2000",
             "hideDuration": "1000",
             "timeOut": "5000",
             "extendedTimeOut": "1000",

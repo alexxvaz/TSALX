@@ -95,4 +95,6 @@ body{
     max-width: 24px;
     max-height: 24px;
 }
-
+.alinhamento-vertical{
+    padding-top: 2rem;
+}
