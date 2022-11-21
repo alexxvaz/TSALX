@@ -31,19 +31,19 @@
                     <div class="col-md-5">
                         <div class="form-group">
                             @Html.LabelFor( m => m.NomePais )
-                            @Html.DropDownListFor( m => m.NomePais, new SelectList( Model.ListaRegiao, "IDRegiao", "Nome" ), "(selecione)", new { @class = "form-control", id = "listaRegiaoPesquisa" } )
+                            @Html.DropDownListFor( m => m.NomePais, new SelectList( Model.ListaRegiao, "Country", "Nome" ), "(selecione)", new { @class = "form-control", id = "listaRegiaoPesquisa" } )
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="form-group">
-                            @Html.LabelFor( m => m.IDLiga )
-                            @Html.TextBoxFor( m => m.IDLiga, new { @class = "form-control", autocomplete = "on" } )
+                            @Html.LabelFor( m => m.IDAPILiga )
+                            @Html.DropDownListFor( m => m.IDAPILiga, new SelectList( Model.ListaLiga, "IDAPI", "Nome" ), "(selecione)", new { @class = "form-control" } )
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             @Html.LabelFor( m => m.AnoTemporada )
-                            @Html.TextBoxFor( m => m.AnoTemporada, new { @class = "form-control", autocomplete = "on" } )
+                            @Html.DropDownListFor( m => m.AnoTemporada, new SelectList( Model.ListaTemporadas ), "(selecione)", new { @class = "form-control" } )
                         </div>
                     </div>
                 </div>

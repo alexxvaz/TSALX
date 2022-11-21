@@ -107,6 +107,41 @@ namespace TSALX.Servico
 
             return lstRet;
         }
+        public List<Liga> pesquisarLiga( short pshtAno, string pstrPais )
+        {
+            List<Liga> lstRet = null;
+            _oRequest.RequestUri = new Uri( $"https://v3.football.api-sports.io/leagues?country={pstrPais}&season={pshtAno}" );
+            HttpClient oBrowse = new HttpClient();
+
+            HttpResponseMessage oResposta = oBrowse.SendAsync( _oRequest ).Result;
+
+            if ( oResposta.IsSuccessStatusCode )
+            {
+                string strDados = oResposta.Content
+                                           .ReadAsStringAsync()
+                                           .Result;
+
+                IEnumerable<JToken> oLiga = JObject.Parse( strDados )
+                                                   .SelectToken( "response" );
+
+                lstRet = new List<Liga>();
+
+                foreach ( JToken itm in oLiga )
+                {
+                    JToken tokenLiga = itm.SelectToken( "league" );
+                    JToken tokenPais = itm.SelectToken( "country" );
+
+                    lstRet.Add( new Liga()
+                    {
+                        ID = tokenLiga.Value<int>( "id" ),
+                        Nome = tokenLiga.Value<string>( "name" ),
+                        NomePais = tokenPais.Value<string>( "name" )
+                    } );
+                }
+            }
+
+            return lstRet;
+        }
         #endregion
 
         #region Equipe
@@ -127,7 +162,8 @@ namespace TSALX.Servico
                 } );
             }
 
-            return lstRet;
+            return lstRet.OrderBy( e => e.Nome )
+                         .ToList();
         }
         public List<Equipe> pesquisarEquipe( string pstrNomeEquipe )
         {
@@ -151,10 +187,10 @@ namespace TSALX.Servico
 
             return lstRet;
         }
-        public List<Equipe> pesquisarEquipe( string pstrPais, short pshtTemporada, int pintLiga )
+        public List<Equipe> pesquisarEquipe( string pstrPais, short pshtAno, int pintLiga )
         {
             List<Equipe> lstRet = null;
-            _oRequest.RequestUri = new Uri( $"https://v3.football.api-sports.io/teams?country={pstrPais}&league={pintLiga}&season={pshtTemporada}" );
+            _oRequest.RequestUri = new Uri( $"https://v3.football.api-sports.io/teams?country={pstrPais}&league={pintLiga}&season={pshtAno}" );
             HttpClient oBrowse = new HttpClient();
 
             HttpResponseMessage oResposta = oBrowse.SendAsync( _oRequest ).Result;

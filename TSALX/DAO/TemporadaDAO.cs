@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
 
 using Alxware.BD;
@@ -46,8 +45,8 @@ namespace TSALX.DAO
             }
 
             return lstRet;
-         
         }
+        
         public void salvar( Temporada pobjTemp )
         {
             try
@@ -98,7 +97,6 @@ namespace TSALX.DAO
 
            
         }
-
         public void excluir( int pintID )
         {
             try
@@ -117,7 +115,7 @@ namespace TSALX.DAO
 
             try
             {
-                DataTableReader rd = _oBD.executarQuery( "SELECT  AnoInicial, AnoFinal FROM Temporada WHERE IDTemporada = {0}", pintID );
+                DataTableReader rd = _oBD.executarQuery( "SELECT AnoInicial, AnoFinal FROM Temporada WHERE IDTemporada = {0}", pintID );
 
                 if( rd.Read() )
                 {

@@ -16,7 +16,7 @@ namespace TSALX.Pesquisa
         public short AnoTemporada { get; set; }
 
         // Lista
-        public List<Temporada> ListaTemporadas { get; set; }
+        public List<short> ListaTemporadas { get; set; }
         public List<Regiao> ListaRegiao { get; set; }
         
     }

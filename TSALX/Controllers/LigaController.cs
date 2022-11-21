@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 using Alxware.Erro;
+
 using TSALX.DAO;
 using TSALX.Models;
 using TSALX.Pesquisa;
@@ -20,10 +19,20 @@ namespace TSALX.Controllers
 
         private LigaPesquisa obterPesquisa()
         {
+            List<short> lstAno = new List<short>();
+
+            List<Temporada> lstTemporada = new TemporadaDAO().listar();
+
+            foreach ( Temporada itm in lstTemporada )
+            {
+                if ( !lstAno.Contains( itm.AnoInicial ) )
+                    lstAno.Add( itm.AnoFinal );
+            }
+
             return new LigaPesquisa()
             {
                 ListaRegiao = _oRegiaoDAO.listar(),
-                ListaTemporadas = new List<Temporada>()
+                ListaTemporadas = lstAno
             };
         }
 
@@ -159,6 +168,12 @@ namespace TSALX.Controllers
         {
             APIFutebol apiLiga = new APIFutebol();
             List<Models.API.Liga> lstRet = apiLiga.pesquisarLiga( nome );
+            return Json( lstRet, JsonRequestBehavior.AllowGet );
+        }
+        public JsonResult pesquisarLigaTemporada( short ano, string pais )
+        {
+            APIFutebol apiLiga = new APIFutebol();
+            List<Models.API.Liga> lstRet = apiLiga.pesquisarLiga( ano, pais );
             return Json( lstRet, JsonRequestBehavior.AllowGet );
         }
     }

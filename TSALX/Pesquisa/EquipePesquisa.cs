@@ -13,13 +13,13 @@ namespace TSALX.Pesquisa
         [Display( Name = "Região" )]
         public string NomePais { get; set; }
         [Display( Name = "Liga" )]
-        public int IDLiga { get; set; }
+        public int IDAPILiga { get; set; }
         [Display( Name = "Temporada" )]
         public short AnoTemporada { get; set; }
 
         // Lista
-        public List<Temporada> ListaTemporadas { get; set; }
+        public List<short> ListaTemporadas { get; set; }
         public List<Regiao> ListaRegiao { get; set; }
-        public List<Campeonato> ListaLiga { get; set; }
+        public List<LigaLista> ListaLiga { get; set; }
     }
 }

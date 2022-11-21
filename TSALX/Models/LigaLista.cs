@@ -8,5 +8,6 @@
         public bool Selecao { get; set; }
         public string Bandeira { get; set; }
         public string Escudo { get; set; }
+        public int? IDAPI { get; set; }
     }
 }

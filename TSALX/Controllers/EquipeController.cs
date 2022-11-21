@@ -19,16 +19,28 @@ namespace TSALX.Controllers
 
         private EquipePesquisa obterPesquisa( List<Regiao> plstRegiao )
         {
+            List<short> lstAno = new List<short>();
+
+            List<Temporada> lstTemporada = new TemporadaDAO().listar();
+
+            foreach ( Temporada itm in lstTemporada )
+            {
+                if ( !lstAno.Contains( itm.AnoInicial ) )
+                    lstAno.Add( itm.AnoFinal );
+            }
+            
             return new EquipePesquisa()
             {
-                ListaLiga = new List<Campeonato>(),
-                ListaTemporadas = new List<Temporada>(),
+                ListaTemporadas = lstAno,
+                ListaLiga = new LigaDAO().listar()
+                                         .Where( l => l.IDAPI.HasValue )
+                                         .ToList(),
                 ListaRegiao = plstRegiao.Where( r => !string.IsNullOrWhiteSpace( r.Country.Trim() ) )
                                                            .ToList()
             };
 
         }
-        // GET: Equipe
+        
         public ActionResult Index()
         {
             string strMensagem = string.Empty;
@@ -173,6 +185,12 @@ namespace TSALX.Controllers
         {
             APIFutebol apiEquipe = new APIFutebol();
             List<Models.API.Equipe> lstRet = apiEquipe.pesquisarEquipe( nome );
+            return Json( lstRet, JsonRequestBehavior.AllowGet );
+        }
+        public JsonResult pesquisarEquipeLiga( string pais, short ano, int liga )
+        {
+            APIFutebol apiEquipe = new APIFutebol();
+            List<Models.API.Equipe> lstRet = apiEquipe.pesquisarEquipe( pais, ano, liga );
             return Json( lstRet, JsonRequestBehavior.AllowGet );
         }
     }
