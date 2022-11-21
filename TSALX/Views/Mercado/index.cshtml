@@ -1,23 +1,11 @@
-﻿@model IEnumerable<TSALX.Models.Mercado>
+﻿@model TSALX.ViewModel.MercadoPG
 @{
-    ViewBag.Title = "Mercado";
+    ViewBag.Title = Model.Titulo;
 }
 
-<h1>Mercado</h1>
+<h1>Model.Titulo</h1>
 
-@if( ViewBag.ErroMensagem != null )
-{
-    <div class="row mt-3">
-        <div class="col-lg-12">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                @ViewBag.ErroMensagem
-            </div>
-        </div>
-    </div>
-}
+
 
 <div class="row mt-4">
     <div class="col-lg-12 text-right">
@@ -37,7 +25,7 @@
             </thead>
             <tbody>
 
-                @foreach( var item in Model )
+                @foreach ( var item in Model.ListaMercado )
                 {
 
                     <tr>
@@ -52,3 +40,12 @@
         </table>
     </div>
 </div>
+
+@section Mercado
+{
+    <script type="text/javascript">
+        $(document).ready(() => {
+            exibirMensagem( @Model.TipoMSG, "@Model.TextoMSG");
+        });
+    </script>
+}

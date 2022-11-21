@@ -1,37 +1,67 @@
 ﻿using Alxware.Erro;
+using System;
 using System.Web.Mvc;
 using TSALX.DAO;
+using TSALX.Models;
+using TSALX.ViewModel;
 
 namespace TSALX.Controllers
 {
     public class MercadoController : Controller
     {
-        // GET: Mercado
+        private MercadoDAO _oDAO = new MercadoDAO();
+
         public ActionResult Index()
         {
-            if( Request.QueryString[ "Mensagem" ] != null )
-                ViewBag.ErroMensagem = Request.QueryString[ "Mensagem" ];
+            string strMensagem = string.Empty;
+            ErroTipo enuTipo = ErroTipo.Processo;
 
-            return View( new MercadoDAO().listar() );
+            if ( Request.QueryString[ "Mensagem" ] != null )
+            {
+                strMensagem = Request.QueryString[ "Mensagem" ];
+
+                switch ( Request.QueryString[ "Tipo" ] )
+                {
+                    case "Processo":
+                        enuTipo = ErroTipo.Processo;
+                        break;
+                    case "Dados":
+                        enuTipo = ErroTipo.Dados;
+                        break;
+                    case "Sistema":
+                        enuTipo = ErroTipo.Sistema;
+                        break;
+                }
+            }
+
+            return View( new MercadoPG() 
+            { 
+                Titulo = "Mercado", 
+                ListaMercado = _oDAO.listar(),
+                TextoMSG = strMensagem,
+                TipoMSG = Convert.ToInt16( enuTipo )
+            } );
         }
 
         [HttpGet]
         public ActionResult novo()
         {
             ModelState.Clear();
-            return View( new Models.Mercado() );
+            return View( new MercadoVM() 
+            { 
+                Titulo= "Novo Mercado", 
+                mercado = new Mercado()
+            } );
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult novo( Models.Mercado pobj )
+        public ActionResult novo( MercadoVM pobj )
         {
             try
             {
                 if( ModelState.IsValid )
                 {
-                    MercadoDAO obj = new MercadoDAO();
-                    obj.salvar( pobj );
-
+                    _oDAO.salvar( pobj.mercado );
                     return RedirectToAction( "Index" );
                 }
                 else
@@ -39,27 +69,34 @@ namespace TSALX.Controllers
             }
             catch( alxExcecao ex )
             {
-                ViewBag.ErroMensagem = ex.Mensagem;
-                return View();
+                return View( new MercadoVM()
+                {
+                    Titulo = "Novo Mercado",
+                    mercado = new Mercado(),
+                    TextoMSG = ex.Mensagem,
+                    TipoMSG = Convert.ToInt16( ex.Tipo )
+                } );
             }
         }
 
         [HttpGet]
         public ActionResult editar( int id )
         {
-            return View( new MercadoDAO().obter( id ) ); 
+            return View( new MercadoVM()
+            {
+                Titulo = "Editar Mercado",
+                mercado = _oDAO.obter( id )
+            } ); ;
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult editar( Models.Mercado pobj )
+        public ActionResult editar( MercadoVM pobj )
         {
             try
             {
                 if( ModelState.IsValid )
                 {
-                    MercadoDAO obj = new MercadoDAO();
-                    obj.salvar( pobj );
-
+                    _oDAO.salvar( pobj.mercado );
                     return RedirectToAction( "index" );
                 }
                 else
@@ -68,8 +105,13 @@ namespace TSALX.Controllers
             }
             catch( alxExcecao ex )
             {
-                ViewBag.ErroMensagem = ex.Mensagem;
-                return View();
+                return View( new MercadoVM()
+                {
+                    Titulo = "Editar Mercado",
+                    mercado = pobj.mercado,
+                    TextoMSG = ex.Mensagem,
+                    TipoMSG = Convert.ToInt16( ex.Tipo )
+                } );
             }
 
         }
@@ -78,12 +120,11 @@ namespace TSALX.Controllers
         {
             try
             {
-                new MercadoDAO().excluir( id );
+                _oDAO.excluir( id );
                 return RedirectToAction( "index" );
             }
             catch( alxExcecao ex )
             {
-                ViewBag.ErroMensagem = ex.Mensagem;
                 return RedirectToAction( "index", ex );
             }
         }
