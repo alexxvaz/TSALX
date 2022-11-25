@@ -38,14 +38,19 @@ namespace TSALX.DAO
 
                 while( rd.Read() )
                 {
-                    lst.Add( new Models.EquipeLista()
+                    int? intIDAPI = null;
+
+                    if ( !rd.IsDBNull( 5 ) )
+                        intIDAPI = Convert.ToInt32( rd[ "IDAPI_Equipe" ] );
+
+                    lst.Add( new EquipeLista()
                     {
                         IDEquipe = Convert.ToInt32( rd[ "IDEquipe" ] ),
                         Nome = rd[ "NomeEquipe" ].ToString(),
                         NomeRegiao = rd[ "NomeRegiao" ].ToString(),
-                        Bandeira = Util.informarBandeira( rd[ "SiglaRegiao" ].ToString() ),
+                        Sigla = rd[ "SiglaRegiao" ].ToString(),
                         Selecao = !rd.IsDBNull( 4 ),
-                        Escudo = Util.informarEscudoEquipe(rd.IsDBNull(5)? null : (int?) rd[ "IDAPI_Equipe" ] )
+                        IDEquipeAPI = intIDAPI
                     } ); 
                 }
 

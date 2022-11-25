@@ -47,10 +47,9 @@ namespace TSALX.DAO
                         IDLiga = Convert.ToInt32( rd[ "IDLiga" ] ),
                         Nome = rd[ "NomeLiga" ].ToString(),
                         NomeRegiao = rd[ "NomeRegiao" ].ToString(),
+                        Sigla = rd[ "SiglaRegiao" ].ToString(),
                         Selecao = Convert.ToBoolean( rd[ "EhSelecao" ] ),
-                        Bandeira = Util.informarBandeira( rd[ "SiglaRegiao" ].ToString() ),
-                        Escudo = Util.informarEscudoLiga( intAPI_ID  ), 
-                        IDAPI = intAPI_ID
+                        IDLigaAPI = intAPI_ID
                     } );
                 }
             }

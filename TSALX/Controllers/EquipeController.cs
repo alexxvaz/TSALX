@@ -33,7 +33,7 @@ namespace TSALX.Controllers
             {
                 ListaTemporadas = lstAno,
                 ListaLiga = new LigaDAO().listar()
-                                         .Where( l => l.IDAPI.HasValue )
+                                         .Where( l => l.IDLigaAPI.HasValue )
                                          .ToList(),
                 ListaRegiao = plstRegiao.Where( r => !string.IsNullOrWhiteSpace( r.Country.Trim() ) )
                                                            .ToList()

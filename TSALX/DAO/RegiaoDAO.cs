@@ -35,7 +35,6 @@ namespace TSALX.DAO
                         IDRegiao = Convert.ToInt16( rd[ "IDRegiao" ] ),
                         Nome = rd[ "NomeRegiao" ].ToString(),
                         Sigla = rd[ "SiglaRegiao" ].ToString(),
-                        Bandeira = Util.informarBandeira( rd[ 2 ].ToString() ),
                         Country = rd[ "Country" ].ToString()
                     } );
                 }
@@ -183,7 +182,6 @@ namespace TSALX.DAO
                         IDRegiao = rd.GetInt16( 0 ),
                         Nome = rd[ 1 ].ToString(),
                         Sigla = rd.IsDBNull( 2 ) ? string.Empty : rd[ 2 ].ToString(),
-                        Bandeira = Util.informarBandeira( rd[ 2 ].ToString() ),
                         TemSelecao = !rd.IsDBNull( 3 ),
                         Country = rd[ 4 ].ToString(),
                         CodCountry = rd.IsDBNull( 2 ) ? string.Empty : rd[ 2 ].ToString()
