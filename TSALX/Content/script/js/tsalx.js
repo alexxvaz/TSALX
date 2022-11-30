@@ -9,10 +9,6 @@
         }
     };
 
-    $('#TimeTabela').DataTable(arrOpcao);
-    $('#MercadoTabela').DataTable(arrOpcao);
-    $('#RegiaoTabela').DataTable(arrOpcao);
-    $('#LigaTabela').DataTable(arrOpcao);
     $('#TSALXTabela').DataTable(arrOpcao);
 
 });
