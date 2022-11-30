@@ -1,23 +1,9 @@
-﻿@model IEnumerable<TSALX.Models.CampeonatoLista>
+﻿@model TSALX.ViewModel.CampeonatoPG
 @{
-    ViewBag.Title = "Campeonato";
+    ViewBag.Title = Model.Titulo;
 }
 
-<h1>Campeonato</h1>
-
-@if( ViewBag.ErroMensagem != null )
-{
-    <div class="row mt-3">
-        <div class="col-lg-12">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                @ViewBag.ErroMensagem
-            </div>
-        </div>
-    </div>
-}
+<h1>@Model.Titulo</h1>
 
 <div class="row mt-4">
     <div class="col-lg-12 text-right">
@@ -27,46 +13,49 @@
 
 <div class="row mt-2">
     <div class="col-lg-12">
-        <table id="CampeonatoTabela" class="table bg-white">
+        <table id="TSALXTabela" class="table bg-white">
             <thead class="bg-primary text-white">
                 <tr>
-                    <th class="w-50">Nome</th>
+                    <th>&nbsp;</th> <!-- Logo -->
+                    <th class="text-center">Temporada</th>
+                    <th>&nbsp;</th> <!-- Bandeira -->
+                    <th class="w-25">Liga</th>
                     <th class="text-center">Seleções</th>
                     <th class="text-center">Ativo</th>
-                    <th>&nbsp;</th>
-                    <th>Região</th>
+                    <th class="text-center">Times</th>
                     <th>&nbsp;</th>
                     <th>&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
 
-                @foreach( var item in Model )
+                @foreach ( var itm in Model.ListaCampeonato )
                 {
-                <tr>
-                    <td class="w-50">@item.Nome</td>
-                    @if( item.Selecao )
-                    {
-                        <td class="text-center"><i class="fa fa-trophy" aria-hidden="true"></i></td>
-                    }
-                    else
-                    {
-                        <td>&nbsp;</td>
-                    }
-                    @if ( item.Ativo )
-                    {
-                        <td class="text-center"><i class="fa fa-check" aria-hidden="true"></i></td>
-                    }
-                    else
-                    {
-                        <td>&nbsp;</td>
-                    }
-
-                    <td class="text-center"><img src="@item.Bandeira" title="@item.NomeRegiao" class="bandeira" alt="tsalx - Equipe" /></td>
-                    <td>@item.NomeRegiao</td>
-                    <td class="text-center"><a href="@Url.Action( "editar", "Campeonato", new { id = item.IDCampeonato } )" class="text-secondary"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
-                    <td class="text-center"><a href="@Url.Action( "excluir", "Campeonato", new { id = item.IDCampeonato } )" onclick="return confirm('Deseja excluir o item @item.Nome?');" class="text-danger"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a></td>
-                </tr>
+                    <tr>
+                        <td class="text-center"><img src="@itm.Logo" class="logo" /></td>
+                        <td class="text-center">@itm.Temporada</td>
+                        <td class="text-center"><img src="@itm.Bandeira" class="bandeira" alt="tsalx - Equipe" /></td>
+                        <td class="w-25">@itm.NomeLiga</td>
+                        @if ( itm.EhSelecao )
+                        {
+                            <td class="text-center text-warning align-middle"><i class="fa fa-check-circle-o fa-lg" aria-hidden="true"></i></td>
+                        }
+                        else
+                        {
+                            <td>&nbsp;</td>
+                        }
+                        @if ( itm.Ativo )
+                        {
+                            <td class="text-center text-success align-middle"><i class="fa fa-check" aria-hidden="true"></i></td>
+                        }
+                        else
+                        {
+                            <td>&nbsp;</td>
+                        }
+                        <td class="text-center"><a href="#" class="text-info"><i class="fa fa-users" aria-hidden="true"></i></a></td>
+                        <td class="text-center"><a href="@Url.Action( "editar", "Campeonato", new { id = itm.IDCampeonato } )" class="text-secondary"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
+                        <td class="text-center"><a href="@Url.Action( "excluir", "Campeonato", new { id = itm.IDCampeonato } )" onclick="return confirm('Deseja excluir o itm @itm.NomeLiga da temporada @itm.Temporada?');" class="text-danger"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a></td>
+                    </tr>
 
                 }
 
@@ -75,3 +64,46 @@
     </div>
 </div>
 
+@using ( Html.BeginForm() )
+{
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-light">
+                    <div class="card-title">
+                        <h4>Cadastro</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor( m => m.campeonato.IDTemporada )
+                                @Html.DropDownListFor( m => m.campeonato.IDTemporada, new SelectList( Model.ListaTemporada, "IDTemporada", "Anos" ), "(selecione)", new { @class = "form-control" } )
+                                @Html.ValidationMessageFor( m => m.campeonato.IDTemporada )
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                @Html.LabelFor( m => m.campeonato.IDLiga )
+                                @Html.DropDownListFor( m => m.campeonato.IDLiga, new SelectList( Model.ListaLiga, "IDLiga", "Nome" ), "(selecione)", new { @class = "form-control" } )
+                                @Html.ValidationMessageFor( m => m.campeonato.IDLiga )
+                            </div>
+                        </div>
+                        <div class="col-md-2 alinhamento-vertical">
+                            <button type="submit" class="btn btn-warning">Salvar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section Campeonato
+{
+    <script type="text/javascript">
+        $(document).ready( () => {
+            exibirMensagem(@Model.TipoMSG, "@Model.TextoMSG");
+        });
+    </script>
+}

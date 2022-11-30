@@ -52,10 +52,9 @@
                                 @Html.ActionLink( "Região", "index", "Regiao", null, new { @class = "dropdown-item text-light" } )
                                 @Html.ActionLink( "Liga", "index", "Liga", null, new { @class = "dropdown-item text-light" } )
                                 @Html.ActionLink( "Times", "index", "Equipe", null, new { @class = "dropdown-item text-light" } )
-                                @Html.ActionLink( "Temporada", "index", "Temporada", null, new { @class = "dropdown-item text-light" } )
                                 <div class="dropdown-divider"></div>
+                                @Html.ActionLink( "Temporada", "index", "Temporada", null, new { @class = "dropdown-item text-light" } )
                                 @Html.ActionLink( "Campeonato", "index", "Campeonato", null, new { @class = "dropdown-item text-light" } )
-                                <a href="#" class="dropdown-item text-light">Equipe no Campeonato</a>
                                 <div class="dropdown-divider"></div>
                                 @Html.ActionLink( "Mercado", "index", "Mercado", null, new { @class = "dropdown-item text-light" } )
                             </div>
@@ -131,8 +130,8 @@
         @RenderSection( "Liga_Editar", false )
 
         @RenderSection( "Temporada", false )
-
         @RenderSection( "Mercado", false )
+        @RenderSection( "Campeonato", false )
 
     </div>
 </body>

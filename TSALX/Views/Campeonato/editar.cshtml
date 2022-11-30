@@ -1,10 +1,10 @@
-﻿@model TSALX.Models.Campeonato
+﻿@model TSALX.ViewModel.CampeonatoVM
 
 @{
-    ViewBag.Title = "Editar Campeonato";
+    ViewBag.Title = Model.Titulo;
 }
 
-<h1>Editar Campeonato</h1>
+<h1>@Model.Titulo</h1>
 
 <div class="row">
     <div class="col-lg-12 text-right">
@@ -14,116 +14,75 @@
     </div>
 </div>
 
-@using( Html.BeginForm() )
+@using ( Html.BeginForm() )
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor( m => m.IDCampeonato )
 
-
-    <div class="row mt-2">
-        <div class="col-lg-12">
-            <div class="form-group">
-                @Html.LabelFor( m => m.Nome )
-                @Html.TextBoxFor( m => m.Nome, new { @class = "form-control", autocomplete = "on" } )
-                @Html.ValidationMessageFor( m => m.Nome )
+    <div class="row mt-3">
+        <div class="col-lg-2 text-center d-flex flex-column justify-content-center align-items-center">
+            <img src="@( TSALX.Servico.Util.informarEscudoLiga( Model.liga.IDAPI ) )" class="rounded img-thumbnail" />
+        </div>
+        <div class="col-lg-8">
+            <div class="row mb-2">
+                <div class="col-lg-2 p-2 rotulo rounded-left">Região</div>
+                <div class="col-lg-10 p-2 bg-white info rounded-right">
+                    <img src="@Model.regiao.Bandeira" class="bandeira"/>
+                    @Html.DisplayFor( m => m.regiao.Nome )
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-lg-2 p-2 rotulo rounded-left">Temporada</div>
+                <div class="col-lg-10 p-2 bg-white info rounded-right">
+                    @Html.DisplayFor( m => m.temporada.Anos )
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2 p-2 rotulo rounded-left">Liga</div>
+                <div class="col-lg-10 p-2 bg-white info rounded-right">
+                    @Html.DisplayFor( m => m.liga.Nome )
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="row mt-1">
-        <div class="col-lg-12">
-            <div class="form-group">
-                @Html.LabelFor( m => m.IDRegiao )
-                @Html.DropDownListFor( m => m.IDRegiao, new SelectList( Model.ListaRegiao, "IDRegiao", "Nome" ), "(selecione)", new { @class = "form-control" } )
-                @Html.ValidationMessageFor( m => m.IDRegiao )
-            </div>
-        </div>
 
     </div>
-
-    <div class="row mt-1">
-        <div class="col-lg-6">
+    <div class="row">
+        <div class="col-lg-2">&nbsp;</div>
+        <div class="col-lg-7">
             <div class="custom-switch custom-control-inline">
                 @Html.CheckBoxFor( m => m.Ativo, new { @class = "custom-control-input" } )
                 @Html.LabelFor( m => m.Ativo, new { @class = "custom-control-label" } )
             </div>
         </div>
-        <div class="col-lg-6">
-            <div class="custom-switch custom-control-inline">
-                @Html.CheckBoxFor( m => m.Selecao, new { @class = "custom-control-input" } )
-                @Html.LabelFor( m => m.Selecao, new { @class = "custom-control-label" } )
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-
-        <div class="col-lg-12 text-right">
+        <div class="col-lg-1">
             <button type="submit" class="btn btn-warning">Salvar</button>
         </div>
     </div>
 }
-
-<h3>Times</h3>
-<div class="row">
-    <div class="col-lg-4">
-
-        <table class="table table-light table-bordered">
-
-            <tbody>
-                @foreach( var itm in Model.Coluna1Equipe )
-                {
-                    <tr>
-                        <td class="w-100">@itm.Nome</td>
-                        <td><img src="@itm.Bandeira" class="bandeira" alt="tsalx - Campeonato" title="@itm.NomeRegiao" /></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-    </div>
-    <div class="col-lg-4">
-        <table class="table table-light table-bordered">
-
-            <tbody>
-                @foreach( var itm in Model.Coluna2Equipe )
-                {
-                    <tr>
-                        <td class="w-100">@itm.Nome</td>
-                        <td><img src="@itm.Bandeira" class="bandeira" alt="tsalx - Campeonato" title="@itm.NomeRegiao" /></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <div class="col-lg-4">
-        <table class="table table-light table-bordered">
-
-            <tbody>
-                @foreach( var itm in Model.Coluna3Equipe )
-                {
-                    <tr>
-                        <td class="w-100">@itm.Nome</td>
-                        <td><img src="@itm.Bandeira" class="bandeira" alt="tsalx - Campeonato" title="@itm.NomeRegiao" /></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-    </div>
-
-</div>
-
-@if( ViewBag.ErroMensagem != null )
+@section Campeonato
 {
-    <div class="row mt-3">
-        <div class="col-lg-12">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                @ViewBag.ErroMensagem
-            </div>
-        </div>
-    </div>
+    <script type="text/javascript">
+        $(document).ready( () => {
+            exibirMensagem(@Model.TipoMSG, "@Model.TextoMSG");
+        });
+    </script>
+    <style type="text/css">
+        .rotulo {
+            background-color: #d6d6d6;
+            color: #444444;
+            font-weight: 600;
+            border-top: 1px solid #999999;
+            border-bottom: 1px solid #999999;
+            border-left: 1px solid #999999;
+            text-align: right;
+        }
+        .info {
+            border-top: 1px solid #999999;
+            border-bottom: 1px solid #999999;
+            border-right: 1px solid #999999;
+            font-weight:bold;
+        }
+    </style>
 }
+
+
