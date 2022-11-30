@@ -37,7 +37,7 @@
                     <div class="col-md-5">
                         <div class="form-group">
                             @Html.LabelFor( m => m.IDAPILiga )
-                            @Html.DropDownListFor( m => m.IDAPILiga, new SelectList( Model.ListaLiga, "IDAPI", "Nome" ), "(selecione)", new { @class = "form-control" } )
+                            @Html.DropDownListFor( m => m.IDAPILiga, new SelectList( Model.ListaLiga, "IDLigaAPI", "Nome" ), "(selecione)", new { @class = "form-control" } )
                         </div>
                     </div>
                     <div class="col-md-2">

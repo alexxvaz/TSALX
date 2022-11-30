@@ -15,6 +15,20 @@ namespace TSALX.Models
         [Range( 2020, short.MaxValue, ErrorMessage = "O ano final deve ser maior que 2020" )]
         [ValidaAno]
         public short AnoFinal { get; set; }
+        public string Anos
+        {
+            get
+            {
+                string strRet = string.Empty;
+
+                if ( AnoInicial == AnoFinal )
+                    strRet = AnoInicial.ToString();
+                else
+                    strRet = $"{ AnoInicial - 2000 }/{AnoFinal - 2000}";
+
+                return strRet;
+            }
+        }
     }
 
     public class ValidaAno : ValidationAttribute

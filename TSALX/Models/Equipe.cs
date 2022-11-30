@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using TSALX.Servico;
+
 namespace TSALX.Models
 {
     public class Equipe
@@ -17,7 +19,12 @@ namespace TSALX.Models
         public bool Selecao { get; set; }
         [Display( Name = "Código da API")]
         public int IDAPI { get; set; }
-        
+
+        // Somente Leitura
+        public string Escudo 
+        {
+            get { return Util.informarEscudoEquipe( IDAPI ); }
+        }
     }
 
 }

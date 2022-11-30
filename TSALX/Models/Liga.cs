@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using TSALX.Servico;
+
 namespace TSALX.Models
 {
     public class Liga
@@ -15,5 +17,10 @@ namespace TSALX.Models
         public bool Selecao { get; set; }
         [Display( Name = "Código da API" )]
         public int IDAPI { get; set; }
+        // Somente Leitura
+        public string Logo 
+        {
+            get { return Util.informarEscudoLiga( IDAPI ); }
+        }
     }
 }
