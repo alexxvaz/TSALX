@@ -26,14 +26,14 @@ namespace ImportarTSALX
                 Console.WriteLine( new String( '-', 80 ) );
                 Console.WriteLine( "API do Futebol" );
                 Console.WriteLine( new String( '-', 80 ) );
-                Console.WriteLine( "\nIniciando...." );
+                Console.WriteLine( "\nIniciando....\n" );
 
                 //criarScriptSportsbetTXT();
-                //criarScriptLiga();
+                // criarScriptLiga();
                 //pesquisarLiga( "Ligue" );
                 //listarBandeiras();
-                pesquisarEquipe( "Toronto" );
-
+                //pesquisarEquipe( "Toronto" );
+                criarScriptCampeonato();
 
             }
             catch ( alxExcecao ex )
@@ -53,7 +53,7 @@ namespace ImportarTSALX
             }
             finally
             {
-                Console.WriteLine( "Processo finalizado..." );
+                Console.WriteLine( "\nProcesso finalizado..." );
                 Console.ReadLine();
 
             }
@@ -329,9 +329,8 @@ namespace ImportarTSALX
 
                     oStrInsert.Append( "INSERT INTO Liga VALUES ( " );
                     oStrInsert.AppendFormat( "{0}, {1}, ", rd[ "IDCampeonato" ], rd[ "IDRegiao" ] );
-                    oStrInsert.AppendFormat( "'{0}', true, {1}", strNome, rd[ "SelecaoCampeonato" ] );
-                    oStrInsert.Append( ", NULL );" );
-
+                    oStrInsert.AppendFormat( "'{0}', {1}, NULL );", strNome, rd[ "SelecaoCampeonato" ] );
+                    
                     oScript.WriteLine( oStrInsert.ToString() );
 
                     lstLiga.Add( strNome );
@@ -342,6 +341,109 @@ namespace ImportarTSALX
 
             oScript.Flush();
             oScript.Close();
+
+        }
+        static void criarScriptCampeonato()
+        {
+            BD oBD = new BD( "tsalx" );
+
+            DataTableReader rd = oBD.executarQuery( "SELECT * FROM BKP_Campeonato" );
+            StreamWriter oScript = new StreamWriter( @"C:\Users\alexx\OneDrive\Projetos\Trade Sport ALX\BD\script_campeonato.sql" );
+            List<CampeonatoBKP> lstCamp = new List<CampeonatoBKP>();
+            Dictionary<int, int> dicCamp = new Dictionary<int, int>();
+            
+            dicCamp.Add( 20, 20 );
+            dicCamp.Add( 46, 20 );
+            dicCamp.Add( 58, 20 );
+            dicCamp.Add( 59, 22 );
+            dicCamp.Add( 23, 23 );
+            dicCamp.Add( 25, 25 );
+            dicCamp.Add( 28, 28 );
+            dicCamp.Add( 29, 29 );
+            dicCamp.Add( 31, 31 );
+            dicCamp.Add( 33, 33 );
+            dicCamp.Add( 36, 36 );
+            dicCamp.Add( 50, 50 );
+            dicCamp.Add( 55, 26 );
+
+            while ( rd.Read() )
+            {
+                lstCamp.Add( new CampeonatoBKP() 
+                { 
+                    ID = rd.GetInt32( 0 ), // IDCampeonato
+                    IDRegiao = rd.GetInt16( 1 ), // IDRegiao
+                    Nome = rd["NomeCampeonato"].ToString(),
+                    Ativo = rd.GetBoolean( 3 ), // AtivoCampeonato
+                    Selecao = rd.GetBoolean( 4 ) // É seleção
+                
+                } );
+            }
+
+            rd.Close();
+            
+            rd = oBD.executarQuery( "SELECT * FROM Temporada" );
+            List<Temporada> lstTemporada = new List<Temporada>();
+
+            while( rd.Read() )
+            {
+                lstTemporada.Add( new Temporada() 
+                { 
+                    ID = rd.GetInt32( 0 ), 
+                    AnoInicial = rd.GetInt16( 1 ),
+                    AnoFinal = rd.GetInt16( 2 )
+                } );
+            }
+            oScript.WriteLine( "DELETE FROM Campeonato;" );
+            //lstCamp = lstCamp.Where( e => e.Nome.Contains( "/" ) ).ToList();
+            //lstCamp = lstCamp.Where( e => e.ID == 20 || e.ID == 59 || e.ID == 58 ).ToList();
+
+            foreach ( CampeonatoBKP itm in lstCamp )
+            {
+                string strNome = string.Empty;
+                int intTempID = 0;
+                int intLigaID = 0;
+
+                if ( !itm.Nome.Contains( "/") )
+                {
+                    short shtAno = 0;
+                    int intPos = itm.Nome.IndexOf( "20" );
+
+                    if( intPos > -1 )
+                    {
+                        strNome = itm.Nome.Substring( 0, intPos - 1 );
+                        shtAno = short.Parse( itm.Nome.Substring( intPos, 4 ) );
+                        intTempID = lstTemporada.FirstOrDefault( t => t.AnoInicial == shtAno && t.AnoFinal == shtAno ).ID;
+                        intLigaID = Convert.ToInt32( oBD.executarScalar( "select l.IDLiga from Liga l WHERE IDRegiao = {0} and l.NomeLiga = '{1}'", itm.IDRegiao, strNome ) );
+                    }
+                }
+                else
+                {
+                    int intPos = itm.Nome.IndexOf( "2" );
+
+                    if ( intPos > -1 )
+                    {
+                        strNome = itm.Nome.Substring( 0, intPos - 1 );
+                        short shtAnoInicial = short.Parse( "20" + itm.Nome.Substring( intPos, 5 ).Split( '/' )[ 0 ] );
+                        short shtAnoFinal = short.Parse( "20" + itm.Nome.Substring( intPos, 5 ).Split( '/' )[ 1 ] );
+                        intTempID = lstTemporada.FirstOrDefault( t => t.AnoInicial == shtAnoInicial && t.AnoFinal == shtAnoFinal ).ID;
+                        intLigaID = Convert.ToInt32( oBD.executarScalar( "SELECT l.IDLiga FROM Liga l WHERE IDRegiao = {0} and l.NomeLiga LIKE '{1}%'", itm.IDRegiao, strNome ) );
+                    }
+                }
+
+                if ( intLigaID == 0 )
+                {
+                    if( dicCamp.ContainsKey( itm.ID ) )
+                        oScript.WriteLine( $"INSERT INTO Campeonato (IDCampeonato, IDTemporada, IDLiga, AtivoCampeonato) VALUES ( {itm.ID}, {intTempID}, {dicCamp[ itm.ID ]}, {itm.Ativo} );" );
+
+                    Console.WriteLine( "Problema na Região: {0} e Liga: {1}", itm.IDRegiao, strNome );
+                }
+                else
+                    oScript.WriteLine( $"INSERT INTO Campeonato (IDCampeonato, IDTemporada, IDLiga, AtivoCampeonato) VALUES ( {itm.ID}, {intTempID}, {intLigaID}, {itm.Ativo} );" );
+            }
+
+            oScript.Flush();
+            oScript.Close();
+
 
         }
         #endregion
